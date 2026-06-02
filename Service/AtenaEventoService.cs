@@ -68,7 +68,7 @@ namespace ProjetoEspeciais.Service
             string hoje = DateTime.Now.ToString("yyyy-MM-dd");
 
             string filter = Uri.EscapeDataString(
-             $"id_tipo=1 and cache.evento.bloqueado IS NOT TRUE AND evento.outright IS NOT TRUE AND cache.evento.id_grupo_evento={idLiga}"
+             $"momento_realizacao >= '{hoje}' and id_tipo=1 and cache.evento.bloqueado IS NOT TRUE AND evento.outright IS NOT TRUE AND cache.evento.id_grupo_evento={idLiga}"
 
             );
 

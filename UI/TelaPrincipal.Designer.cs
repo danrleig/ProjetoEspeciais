@@ -34,6 +34,16 @@
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
             lblEsportes = new Label();
             dataGridEspeciais = new DataGridView();
+            comboBoxEsportes = new ComboBox();
+            comboBox2 = new ComboBox();
+            labelEventos = new Label();
+            labelLigas = new Label();
+            comboBoxEventos = new ComboBox();
+            comboBoxLigas = new ComboBox();
+            btnPreencherGrid = new Button();
+            numericUpDown1 = new NumericUpDown();
+            comboBoxTipoSuperOdds = new ComboBox();
+            label1 = new Label();
             Esporte = new DataGridViewTextBoxColumn();
             Liga = new DataGridViewTextBoxColumn();
             DataEvento = new DataGridViewTextBoxColumn();
@@ -43,13 +53,10 @@
             ValorAumento = new DataGridViewTextBoxColumn();
             OddFinal = new DataGridViewTextBoxColumn();
             ValorAposta = new DataGridViewTextBoxColumn();
-            comboBoxEsportes = new ComboBox();
-            comboBox2 = new ComboBox();
-            labelEventos = new Label();
-            labelLigas = new Label();
-            comboBoxEventos = new ComboBox();
-            comboBoxLigas = new ComboBox();
+            RiscoEspecial = new DataGridViewTextBoxColumn();
+            Tipo = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)dataGridEspeciais).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
             // 
             // lblEsportes
@@ -65,97 +72,20 @@
             // 
             // dataGridEspeciais
             // 
+            dataGridEspeciais.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             dataGridEspeciais.BackgroundColor = SystemColors.GradientInactiveCaption;
             dataGridEspeciais.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridEspeciais.Columns.AddRange(new DataGridViewColumn[] { Esporte, Liga, DataEvento, Evento, NomeEspecial, Odd, ValorAumento, OddFinal, ValorAposta });
+            dataGridEspeciais.Columns.AddRange(new DataGridViewColumn[] { Esporte, Liga, DataEvento, Evento, NomeEspecial, Odd, ValorAumento, OddFinal, ValorAposta, RiscoEspecial, Tipo });
             dataGridEspeciais.Location = new Point(12, 114);
             dataGridEspeciais.Name = "dataGridEspeciais";
             dataGridEspeciais.ReadOnly = true;
-            dataGridEspeciais.Size = new Size(1505, 244);
+            dataGridEspeciais.Size = new Size(1851, 418);
             dataGridEspeciais.TabIndex = 2;
             dataGridEspeciais.CellContentClick += dataGridEspeciais_CellContentClick;
             dataGridEspeciais.CellEndEdit += dataGridEspeciais_CellEndEdit;
             dataGridEspeciais.CellFormatting += dataGridEspeciais_CellFormatting_1;
             dataGridEspeciais.CellValidating += dataGridEspeciais_CellValidating;
             dataGridEspeciais.EditingControlShowing += dataGridEspeciais_EditingControlShowing;
-            // 
-            // Esporte
-            // 
-            Esporte.HeaderText = "Esporte";
-            Esporte.Name = "Esporte";
-            Esporte.ReadOnly = true;
-            // 
-            // Liga
-            // 
-            Liga.HeaderText = "Liga";
-            Liga.Name = "Liga";
-            Liga.ReadOnly = true;
-            // 
-            // DataEvento
-            // 
-            DataEvento.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            DataEvento.HeaderText = "Data do evento";
-            DataEvento.MaxInputLength = 10;
-            DataEvento.MinimumWidth = 115;
-            DataEvento.Name = "DataEvento";
-            DataEvento.ReadOnly = true;
-            DataEvento.Resizable = DataGridViewTriState.False;
-            DataEvento.Width = 115;
-            // 
-            // Evento
-            // 
-            Evento.HeaderText = "Evento";
-            Evento.MinimumWidth = 100;
-            Evento.Name = "Evento";
-            Evento.ReadOnly = true;
-            Evento.Resizable = DataGridViewTriState.False;
-            // 
-            // NomeEspecial
-            // 
-            NomeEspecial.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            NomeEspecial.HeaderText = "Nome Especial";
-            NomeEspecial.MaxInputLength = 100;
-            NomeEspecial.MinimumWidth = 400;
-            NomeEspecial.Name = "NomeEspecial";
-            NomeEspecial.ReadOnly = true;
-            NomeEspecial.Resizable = DataGridViewTriState.False;
-            NomeEspecial.Width = 400;
-            // 
-            // Odd
-            // 
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.TopCenter;
-            dataGridViewCellStyle1.NullValue = null;
-            Odd.DefaultCellStyle = dataGridViewCellStyle1;
-            Odd.HeaderText = "Odd";
-            Odd.Name = "Odd";
-            Odd.ReadOnly = true;
-            // 
-            // ValorAumento
-            // 
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.TopCenter;
-            dataGridViewCellStyle2.NullValue = null;
-            ValorAumento.DefaultCellStyle = dataGridViewCellStyle2;
-            ValorAumento.HeaderText = "% de aumento";
-            ValorAumento.Name = "ValorAumento";
-            ValorAumento.ReadOnly = true;
-            // 
-            // OddFinal
-            // 
-            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.TopCenter;
-            OddFinal.DefaultCellStyle = dataGridViewCellStyle3;
-            OddFinal.HeaderText = "Odd Final";
-            OddFinal.Name = "OddFinal";
-            OddFinal.ReadOnly = true;
-            // 
-            // ValorAposta
-            // 
-            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.TopCenter;
-            dataGridViewCellStyle4.Format = "C2";
-            dataGridViewCellStyle4.NullValue = null;
-            ValorAposta.DefaultCellStyle = dataGridViewCellStyle4;
-            ValorAposta.HeaderText = "Valor de Aposta";
-            ValorAposta.Name = "ValorAposta";
-            ValorAposta.ReadOnly = true;
             // 
             // comboBoxEsportes
             // 
@@ -211,11 +141,143 @@
             comboBoxLigas.TabIndex = 13;
             comboBoxLigas.SelectedIndexChanged += comboBoxLigas_SelectedIndexChanged_1;
             // 
+            // btnPreencherGrid
+            // 
+            btnPreencherGrid.Location = new Point(1540, 28);
+            btnPreencherGrid.Name = "btnPreencherGrid";
+            btnPreencherGrid.Size = new Size(75, 29);
+            btnPreencherGrid.TabIndex = 14;
+            btnPreencherGrid.Text = "OK";
+            btnPreencherGrid.UseVisualStyleBackColor = true;
+            btnPreencherGrid.Click += btnPreencherGrid_Click;
+            // 
+            // numericUpDown1
+            // 
+            numericUpDown1.Location = new Point(1471, 30);
+            numericUpDown1.Name = "numericUpDown1";
+            numericUpDown1.Size = new Size(49, 23);
+            numericUpDown1.TabIndex = 15;
+            numericUpDown1.ValueChanged += numericUpDown1_ValueChanged;
+            // 
+            // comboBoxTipoSuperOdds
+            // 
+            comboBoxTipoSuperOdds.FormattingEnabled = true;
+            comboBoxTipoSuperOdds.Location = new Point(1165, 30);
+            comboBoxTipoSuperOdds.Name = "comboBoxTipoSuperOdds";
+            comboBoxTipoSuperOdds.Size = new Size(300, 23);
+            comboBoxTipoSuperOdds.TabIndex = 16;
+            comboBoxTipoSuperOdds.SelectedIndexChanged += comboBoxTipoSuperOdds_SelectedIndexChanged;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label1.Location = new Point(1112, 30);
+            label1.Name = "label1";
+            label1.Size = new Size(47, 20);
+            label1.TabIndex = 17;
+            label1.Text = "Tipo: ";
+            label1.Click += label1_Click;
+            // 
+            // Esporte
+            // 
+            Esporte.HeaderText = "Esporte";
+            Esporte.Name = "Esporte";
+            Esporte.ReadOnly = true;
+            // 
+            // Liga
+            // 
+            Liga.HeaderText = "Liga";
+            Liga.Name = "Liga";
+            Liga.ReadOnly = true;
+            // 
+            // DataEvento
+            // 
+            DataEvento.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            DataEvento.HeaderText = "Data do evento";
+            DataEvento.MaxInputLength = 10;
+            DataEvento.MinimumWidth = 115;
+            DataEvento.Name = "DataEvento";
+            DataEvento.ReadOnly = true;
+            DataEvento.Resizable = DataGridViewTriState.False;
+            DataEvento.Width = 115;
+            // 
+            // Evento
+            // 
+            Evento.HeaderText = "Evento";
+            Evento.MinimumWidth = 100;
+            Evento.Name = "Evento";
+            Evento.ReadOnly = true;
+            Evento.Resizable = DataGridViewTriState.False;
+            // 
+            // NomeEspecial
+            // 
+            NomeEspecial.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            NomeEspecial.HeaderText = "Nome Especial";
+            NomeEspecial.MaxInputLength = 100;
+            NomeEspecial.MinimumWidth = 400;
+            NomeEspecial.Name = "NomeEspecial";
+            NomeEspecial.ReadOnly = true;
+            NomeEspecial.Resizable = DataGridViewTriState.False;
+            NomeEspecial.Width = 400;
+            // 
+            // Odd
+            // 
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle1.NullValue = null;
+            Odd.DefaultCellStyle = dataGridViewCellStyle1;
+            Odd.HeaderText = "Odd";
+            Odd.Name = "Odd";
+            Odd.ReadOnly = true;
+            // 
+            // ValorAumento
+            // 
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle2.NullValue = null;
+            ValorAumento.DefaultCellStyle = dataGridViewCellStyle2;
+            ValorAumento.HeaderText = "% de aumento";
+            ValorAumento.Name = "ValorAumento";
+            ValorAumento.ReadOnly = true;
+            // 
+            // OddFinal
+            // 
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.TopCenter;
+            OddFinal.DefaultCellStyle = dataGridViewCellStyle3;
+            OddFinal.HeaderText = "Odd Final";
+            OddFinal.Name = "OddFinal";
+            OddFinal.ReadOnly = true;
+            // 
+            // ValorAposta
+            // 
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle4.Format = "C2";
+            dataGridViewCellStyle4.NullValue = null;
+            ValorAposta.DefaultCellStyle = dataGridViewCellStyle4;
+            ValorAposta.HeaderText = "Valor de Aposta";
+            ValorAposta.Name = "ValorAposta";
+            ValorAposta.ReadOnly = true;
+            // 
+            // RiscoEspecial
+            // 
+            RiscoEspecial.HeaderText = "Risco";
+            RiscoEspecial.Name = "RiscoEspecial";
+            RiscoEspecial.ReadOnly = true;
+            // 
+            // Tipo
+            // 
+            Tipo.HeaderText = "Tipo";
+            Tipo.Name = "Tipo";
+            Tipo.ReadOnly = true;
+            // 
             // TelaPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1861, 890);
+            ClientSize = new Size(1875, 890);
+            Controls.Add(label1);
+            Controls.Add(comboBoxTipoSuperOdds);
+            Controls.Add(numericUpDown1);
+            Controls.Add(btnPreencherGrid);
             Controls.Add(comboBoxLigas);
             Controls.Add(comboBoxEventos);
             Controls.Add(labelLigas);
@@ -227,6 +289,7 @@
             Text = "TelaPrincipal";
             Load += TelaPrincipal_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridEspeciais).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -242,6 +305,10 @@
         private ComboBox comboBox1;
         private ComboBox comboBoxEventos;
         private ComboBox comboBoxLigas;
+        private Button btnPreencherGrid;
+        private NumericUpDown numericUpDown1;
+        private ComboBox comboBoxTipoSuperOdds;
+        private Label label1;
         private DataGridViewTextBoxColumn Esporte;
         private DataGridViewTextBoxColumn Liga;
         private DataGridViewTextBoxColumn DataEvento;
@@ -251,5 +318,7 @@
         private DataGridViewTextBoxColumn ValorAumento;
         private DataGridViewTextBoxColumn OddFinal;
         private DataGridViewTextBoxColumn ValorAposta;
+        private DataGridViewTextBoxColumn RiscoEspecial;
+        private DataGridViewTextBoxColumn Tipo;
     }
 }

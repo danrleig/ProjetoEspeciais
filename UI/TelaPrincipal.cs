@@ -24,32 +24,84 @@ namespace ProjetoEspeciais.UI
 
         private async void TelaPrincipal_Load(object sender, EventArgs e)
         {
+            FormatarGrid();
+        }
+
+
+        public async void FormatarGrid()
+        {
+
             this.WindowState = FormWindowState.Maximized;
-            //dataGridEspeciais.BackgroundColor = dataGridEspeciais.ColumnHeadersDefaultCellStyle.BackColor;
-           // dataGridEspeciais.BackgroundColor = SystemColors.Control;
+
+
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
+            dataGridEspeciais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
+            dataGridEspeciais.ScrollBars = ScrollBars.Vertical; // só scroll vertical
+            //dataGridEspeciais.BackgroundColor = Color.White;
+
             dataGridEspeciais.Columns["Esporte"].ReadOnly = true;// Esporte não pode ser editado diretamente na grid, só pela seleção
             dataGridEspeciais.Columns["Esporte"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Esporte"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Esporte"].Width = 100;
+
             dataGridEspeciais.Columns["Liga"].ReadOnly = true;// Liga não pode ser editada diretamente na grid, só pela seleção
-            dataGridEspeciais.Columns["Liga"].Width = 200;
-            dataGridEspeciais.Columns["Liga"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Liga"].Width = 250;
+            dataGridEspeciais.Columns["Liga"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;// Centraliza o header da coluna Liga
+            dataGridEspeciais.Columns["Liga"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;// Centraliza o conteúdo da coluna Liga
+
+
             dataGridEspeciais.Columns["DataEvento"].ReadOnly = true;// Data do evento não pode ser editada diretamente na grid
+            dataGridEspeciais.Columns["DataEvento"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;// Centraliza a data do evento
+            dataGridEspeciais.Columns["DataEvento"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["DataEvento"].Width = 100;
+
             dataGridEspeciais.Columns["Evento"].ReadOnly = true;// Evento não pode ser editado diretamente na grid, só pela seleção
-            dataGridEspeciais.Columns["Evento"].Width = 200;
+            dataGridEspeciais.Columns["Evento"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;// Centraliza o nome do especial
             dataGridEspeciais.Columns["Evento"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Evento"].Width = 230;
+
             dataGridEspeciais.Columns["NomeEspecial"].ReadOnly = false;// Nome do especial pode ser editado
             dataGridEspeciais.Columns["NomeEspecial"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["NomeEspecial"].Width = 400;
+
             dataGridEspeciais.Columns["Odd"].ReadOnly = false;// Odd pode ser editada
             dataGridEspeciais.Columns["Odd"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Odd"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Odd"].Width = 70;
+
             dataGridEspeciais.Columns["ValorAumento"].ReadOnly = false;// Valor de aumento pode ser editado
             dataGridEspeciais.Columns["ValorAumento"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["ValorAumento"].Width = 110;
+            dataGridEspeciais.Columns["ValorAumento"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
             dataGridEspeciais.Columns["OddFinal"].ReadOnly = false;// Odd final é calculada, não pode ser editada
             dataGridEspeciais.Columns["OddFinal"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["OddFinal"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["OddFinal"].Width = 85;
+
             dataGridEspeciais.Columns["ValorAposta"].ReadOnly = false;// Valor da aposta pode ser editado
+            dataGridEspeciais.Columns["ValorAposta"].Width = 114;
             dataGridEspeciais.Columns["ValorAposta"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["ValorAposta"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            dataGridEspeciais.Columns["RiscoEspecial"].ReadOnly = false;// Risco pode ser editado
+            dataGridEspeciais.Columns["RiscoEspecial"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["RiscoEspecial"].Width = 74;
+            dataGridEspeciais.Columns["RiscoEspecial"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
+            dataGridEspeciais.Columns["Tipo"].ReadOnly = true;// Tipo não pode ser editado diretamente na grid
+            dataGridEspeciais.Columns["Tipo"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Tipo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["Tipo"].Width = 265;
 
+            numericUpDown1.Minimum = 1;
+            numericUpDown1.Value = 1;
+
+            comboBoxTipoSuperOdds.Items.Clear();
+            comboBoxTipoSuperOdds.Width = 300;
+            comboBoxTipoSuperOdds.Items.Add("Super Odds/Super Odds - Múltiplas Escolhas");
+            comboBoxTipoSuperOdds.Items.Add("Super Odds/Super Odds - Novos Usuários");
+            comboBoxTipoSuperOdds.DropDownStyle = ComboBoxStyle.DropDownList;// Impede que o usuário digite um valor, só pode escolher entre as opções
 
             // Adiciona coluna de exclusão com ícone de lixeira
             var colunaExcluir = new DataGridViewButtonColumn();
@@ -65,9 +117,15 @@ namespace ProjetoEspeciais.UI
             colunaExcluir.DefaultCellStyle.ForeColor = Color.Black;
             colunaExcluir.DefaultCellStyle.SelectionBackColor = Color.White;
             colunaExcluir.DefaultCellStyle.SelectionForeColor = Color.Black;
-
+            colunaExcluir.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
+            colunaExcluir.Resizable = DataGridViewTriState.False;
             await CarregarEsportesAsync();
+
+
+           
         }
+
+
 
         private async Task CarregarEsportesAsync()
         {
@@ -76,7 +134,7 @@ namespace ProjetoEspeciais.UI
                 comboBoxEsportes.SelectedIndexChanged -= comboBoxEsportes_SelectedIndexChanged;
                 comboBoxEsportes.Enabled = false;
                 comboBoxEsportes.Items.Clear();
-                comboBoxEsportes.Items.Add("Carregando esportes...");
+                comboBoxEsportes.Items.Add("Escolha o Esporte");
                 comboBoxEsportes.SelectedIndex = 0;
 
                 var esporteService = new AtenaEsporteService(_authService);
@@ -105,45 +163,6 @@ namespace ProjetoEspeciais.UI
 
                 MessageBox.Show($"Erro ao carregar esportes: {ex.Message}", "Erro",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-
-        private void dataGridEspeciais_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)// Valida a entrada do usuário para garantir que apenas números sejam digitados nas colunas de Odd, ValorAumento, OddFinal e ValorAposta
-        {
-            var colunas = new List<string> { "Odd", "ValorAumento", "OddFinal", "ValorAposta" };
-
-            string nomeColuna = dataGridEspeciais.Columns[e.ColumnIndex].Name;
-
-            if (colunas.Contains(nomeColuna))
-            {
-                string valor = e.FormattedValue.ToString();
-
-                if (!string.IsNullOrEmpty(valor) && !decimal.TryParse(valor, out _))
-                {
-                    MessageBox.Show("Digite apenas números!");
-                    e.Cancel = true;
-                }
-            }
-        }
-
-        private void dataGridEspeciais_CellEndEdit(object sender, DataGridViewCellEventArgs e)// Sempre que o usuário terminar de editar uma célula, recalcula a OddFinal se a coluna editada for Odd ou ValorAumento
-        {
-            var row = dataGridEspeciais.Rows[e.RowIndex];
-
-            string nomeColuna = dataGridEspeciais.Columns[e.ColumnIndex].Name;
-
-            if (nomeColuna == "Odd" || nomeColuna == "ValorAumento")
-            {
-                decimal odd = 0;
-                decimal aumento = 0;
-
-                decimal.TryParse(row.Cells["Odd"].Value?.ToString(), out odd);
-                decimal.TryParse(row.Cells["ValorAumento"].Value?.ToString(), out aumento);
-
-                decimal oddFinal = odd * (1 + (aumento / 100));
-
-                row.Cells["OddFinal"].Value = Math.Round(oddFinal, 2);
             }
         }
 
@@ -229,9 +248,11 @@ namespace ProjetoEspeciais.UI
             // Pega o esporte e liga selecionados nos comboBoxes
             string esporte = comboBoxEsportes.SelectedItem?.ToString() ?? "";
             string liga = comboBoxLigas.SelectedItem?.ToString() ?? "";
+            string tipoEspecial = comboBoxTipoSuperOdds.SelectedItem?.ToString() ?? "";
 
             row.Cells["Esporte"].Value = esporte;
             row.Cells["Liga"].Value = liga;
+            row.Cells["Tipo"].Value = tipoEspecial;
 
             // Formata a data do evento para exibição
             if (DateTime.TryParse(evento.MomentoRealizacao, out DateTime data))
@@ -242,6 +263,64 @@ namespace ProjetoEspeciais.UI
             row.Cells["ValorAumento"].Value = 0;
             row.Cells["OddFinal"].Value = 0.00m;
         }
+
+
+        private void dataGridEspeciais_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)// Valida a entrada do usuário para garantir que apenas números sejam digitados nas colunas de Odd, ValorAumento, OddFinal e ValorAposta
+        {
+            var colunas = new List<string> { "Odd", "ValorAumento", "OddFinal", "ValorAposta, RiscoEspecial" };
+
+            string nomeColuna = dataGridEspeciais.Columns[e.ColumnIndex].Name;
+
+            if (colunas.Contains(nomeColuna))
+            {
+                string valor = e.FormattedValue.ToString();
+
+                if (!string.IsNullOrEmpty(valor) && !decimal.TryParse(valor, out _))
+                {
+                    MessageBox.Show("Digite apenas números!");
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        private void dataGridEspeciais_CellEndEdit(object sender, DataGridViewCellEventArgs e)// Sempre que o usuário terminar de editar uma célula, recalcula a OddFinal se a coluna editada for Odd ou ValorAumento
+        {
+            var row = dataGridEspeciais.Rows[e.RowIndex];
+
+            string nomeColuna = dataGridEspeciais.Columns[e.ColumnIndex].Name;
+
+            if (nomeColuna == "Odd" || nomeColuna == "ValorAumento")
+            {
+                decimal odd = 0;
+                decimal aumento = 0;
+
+                decimal.TryParse(row.Cells["Odd"].Value?.ToString(), out odd);
+                decimal.TryParse(row.Cells["ValorAumento"].Value?.ToString(), out aumento);
+
+                decimal oddFinal = odd * (1 + (aumento / 100));
+
+                row.Cells["OddFinal"].Value = Math.Round(oddFinal, 2);
+            }
+        }
+
+
+        private void btnPreencherGrid_Click(object sender, EventArgs e)
+        {
+            if (comboBoxEventos.SelectedItem is not EventoItem evento)
+            {
+                MessageBox.Show("Selecione um evento!", "Atenção",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int quantidade = (int)numericUpDown1.Value; // troque "numericUpDown1" pelo nome que você deu
+
+            for (int i = 0; i < quantidade; i++)
+            {
+                AdicionarEventoNoGrid(evento);
+            }
+        }
+
 
         // Chamado sempre que receber erro 401 (token expirado ou sessão inválida)
         private async Task<bool> RenovarLoginAsync()
@@ -305,15 +384,13 @@ namespace ProjetoEspeciais.UI
 
         private void comboBoxEventos_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (comboBoxEventos.SelectedItem is not EventoItem evento) return;
 
-            AdicionarEventoNoGrid(evento);
         }
 
         private async void comboBoxLigas_SelectedIndexChanged_1(object sender, EventArgs e)
         {
 
-            if (comboBoxLigas.SelectedItem is not LigaItem liga) return;
+            if (comboBoxLigas.SelectedItem is not LigaItem liga) return;// Quando o usuário seleciona uma liga, carregamos os eventos correspondentes a ela
 
             await CarregarEventosAsync(liga.Id);
 
@@ -339,8 +416,8 @@ namespace ProjetoEspeciais.UI
             }
         }
 
-        
-        
+
+
         private void dataGridEspeciais_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
         }
@@ -350,8 +427,8 @@ namespace ProjetoEspeciais.UI
 
 
 
-            // Formata a coluna ValorAposta com R$
-            if (dataGridEspeciais.Columns[e.ColumnIndex].Name == "ValorAposta" && e.RowIndex >= 0)
+            // Formata a coluna ValorAposta e RiscoEspecial com R$
+            if (dataGridEspeciais.Columns[e.ColumnIndex].Name == "ValorAposta" || dataGridEspeciais.Columns[e.ColumnIndex].Name == "RiscoEspecial" && e.RowIndex >= 0)
             {
                 if (e.Value != null && decimal.TryParse(e.Value.ToString(), out decimal valor))
                 {
@@ -360,7 +437,7 @@ namespace ProjetoEspeciais.UI
                 }
             }
 
-            if (dataGridEspeciais.Columns[e.ColumnIndex].Name == "Excluir" && e.RowIndex >= 0)
+            if (dataGridEspeciais.Columns[e.ColumnIndex].Name == "Excluir" && e.RowIndex >= 0)// Formata a coluna de exclusão para mostrar o ícone de lixeira e esconde o texto do botão, além de ajustar as cores para manter o ícone visível
             {
                 var row = dataGridEspeciais.Rows[e.RowIndex];
                 bool linhaVazia = string.IsNullOrEmpty(row.Cells["Evento"].Value?.ToString());
@@ -384,8 +461,23 @@ namespace ProjetoEspeciais.UI
                     cell.Style.SelectionForeColor = Color.Black;// Mantém o texto visível mesmo quando a célula estiver selecionada
                 }
             }
+        }
 
 
-        } 
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBoxTipoSuperOdds_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
