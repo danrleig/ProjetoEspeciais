@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using ProjetoEspeciais.Service;
 using ProjetoEspeciais.Data;
+using System.Web;
 
 namespace ProjetoEspeciais.UI
 {
@@ -34,6 +35,7 @@ namespace ProjetoEspeciais.UI
             this.WindowState = FormWindowState.Maximized;
 
 
+            dataGridEspeciais.AllowUserToAddRows = false;
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
             dataGridEspeciais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dataGridEspeciais.ScrollBars = ScrollBars.Vertical; // só scroll vertical
@@ -84,7 +86,7 @@ namespace ProjetoEspeciais.UI
             dataGridEspeciais.Columns["ValorAposta"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridEspeciais.Columns["ValorAposta"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
-            dataGridEspeciais.Columns["RiscoEspecial"].ReadOnly = false;// Risco pode ser editado
+            dataGridEspeciais.Columns["RiscoEspecial"].ReadOnly = true;// Risco pode ser editado
             dataGridEspeciais.Columns["RiscoEspecial"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridEspeciais.Columns["RiscoEspecial"].Width = 74;
             dataGridEspeciais.Columns["RiscoEspecial"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -92,16 +94,30 @@ namespace ProjetoEspeciais.UI
             dataGridEspeciais.Columns["Tipo"].ReadOnly = true;// Tipo não pode ser editado diretamente na grid
             dataGridEspeciais.Columns["Tipo"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridEspeciais.Columns["Tipo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridEspeciais.Columns["Tipo"].Width = 265;
+            dataGridEspeciais.Columns["Tipo"].Width = 200;
+
+            dataGridEspeciais.Columns["PerfilEspecial"].Width = 74;
+            dataGridEspeciais.Columns["PerfilEspecial"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridEspeciais.Columns["PerfilEspecial"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+
+           
+            dataGridEspeciais.Columns["PerfilEspecial"].ReadOnly = true;
 
             numericUpDown1.Minimum = 1;
             numericUpDown1.Value = 1;
 
             comboBoxTipoSuperOdds.Items.Clear();
             comboBoxTipoSuperOdds.Width = 300;
-            comboBoxTipoSuperOdds.Items.Add("Super Odds/Super Odds - Múltiplas Escolhas");
-            comboBoxTipoSuperOdds.Items.Add("Super Odds/Super Odds - Novos Usuários");
+            comboBoxTipoSuperOdds.Items.Add("Super Odds - Múltiplas Escolhas");
+            comboBoxTipoSuperOdds.Items.Add("Super Odds - Novos Usuários");
             comboBoxTipoSuperOdds.DropDownStyle = ComboBoxStyle.DropDownList;// Impede que o usuário digite um valor, só pode escolher entre as opções
+
+
+            comboBoxrisco.Items.Clear();
+            comboBoxrisco.Items.Add("R$2.000,00");
+            comboBoxrisco.Items.Add("R$5.000,00");
+            comboBoxrisco.Items.Add("R$10.000,00");
+            comboBoxrisco.DropDownStyle = ComboBoxStyle.DropDownList;// Impede que o usuário digite um valor, só pode escolher entre as opções
 
             // Adiciona coluna de exclusão com ícone de lixeira
             var colunaExcluir = new DataGridViewButtonColumn();
@@ -122,7 +138,7 @@ namespace ProjetoEspeciais.UI
             await CarregarEsportesAsync();
 
 
-           
+
         }
 
 
@@ -240,7 +256,7 @@ namespace ProjetoEspeciais.UI
             }
         }
 
-        private void AdicionarEventoNoGrid(EventoItem evento)
+        private void AdicionarEventoNoGrid(EventoItem evento)// Adiciona um evento selecionado no comboBox ao grid, preenchendo as colunas com as informações do evento e os valores padrão
         {
             int index = dataGridEspeciais.Rows.Add();
             var row = dataGridEspeciais.Rows[index];
@@ -249,14 +265,43 @@ namespace ProjetoEspeciais.UI
             string esporte = comboBoxEsportes.SelectedItem?.ToString() ?? "";
             string liga = comboBoxLigas.SelectedItem?.ToString() ?? "";
             string tipoEspecial = comboBoxTipoSuperOdds.SelectedItem?.ToString() ?? "";
+            string risco = comboBoxrisco.SelectedItem?.ToString() ?? "";
+            string perfil = "";
+
+            
+
+            if (checkBoxLinkExclusivo.Checked)
+            {
+                perfil += "🔗 LE";
+            }
+
+            if (checkBoxNovosUsuarios.Checked)
+            {
+                if (perfil != "")
+                    perfil += " ";
+
+                perfil += "🆕👤 NU";
+            }
+
+            // Se nenhum checkbox foi marcado
+            if (perfil == "")
+            {
+                perfil = "Geral";
+            }
+
+
 
             row.Cells["Esporte"].Value = esporte;
             row.Cells["Liga"].Value = liga;
             row.Cells["Tipo"].Value = tipoEspecial;
+            row.Cells["RiscoEspecial"].Value = risco;
+            row.Cells["PerfilEspecial"].Value = perfil;
 
             // Formata a data do evento para exibição
             if (DateTime.TryParse(evento.MomentoRealizacao, out DateTime data))
                 row.Cells["DataEvento"].Value = data.ToString("dd/MM/yyyy HH:mm");
+
+            
 
             row.Cells["Evento"].Value = evento.Nome;
             row.Cells["Odd"].Value = 0.00m;
@@ -267,7 +312,7 @@ namespace ProjetoEspeciais.UI
 
         private void dataGridEspeciais_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)// Valida a entrada do usuário para garantir que apenas números sejam digitados nas colunas de Odd, ValorAumento, OddFinal e ValorAposta
         {
-            var colunas = new List<string> { "Odd", "ValorAumento", "OddFinal", "ValorAposta, RiscoEspecial" };
+            var colunas = new List<string> { "Odd", "ValorAumento", "OddFinal", "ValorAposta", "RiscoEspecial" };
 
             string nomeColuna = dataGridEspeciais.Columns[e.ColumnIndex].Name;
 
@@ -476,6 +521,21 @@ namespace ProjetoEspeciais.UI
         }
 
         private void comboBoxTipoSuperOdds_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBoxrisco_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBoxLinkExclusivo_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void checkBoxNovosUsuarios_CheckedChanged(object sender, EventArgs e)
         {
 
         }
