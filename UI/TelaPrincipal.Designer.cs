@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            DataGridViewCellStyle dataGridViewCellStyle9 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle10 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle11 = new DataGridViewCellStyle();
-            DataGridViewCellStyle dataGridViewCellStyle12 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TelaPrincipal));
             lblEsportes = new Label();
             dataGridEspeciais = new DataGridView();
             Esporte = new DataGridViewTextBoxColumn();
@@ -136,36 +137,36 @@
             // 
             // Odd
             // 
-            dataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.TopCenter;
-            dataGridViewCellStyle9.NullValue = null;
-            Odd.DefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle1.NullValue = null;
+            Odd.DefaultCellStyle = dataGridViewCellStyle1;
             Odd.HeaderText = "Odd";
             Odd.Name = "Odd";
             Odd.ReadOnly = true;
             // 
             // ValorAumento
             // 
-            dataGridViewCellStyle10.Alignment = DataGridViewContentAlignment.TopCenter;
-            dataGridViewCellStyle10.NullValue = null;
-            ValorAumento.DefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle2.NullValue = null;
+            ValorAumento.DefaultCellStyle = dataGridViewCellStyle2;
             ValorAumento.HeaderText = "% de aumento";
             ValorAumento.Name = "ValorAumento";
             ValorAumento.ReadOnly = true;
             // 
             // OddFinal
             // 
-            dataGridViewCellStyle11.Alignment = DataGridViewContentAlignment.TopCenter;
-            OddFinal.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.TopCenter;
+            OddFinal.DefaultCellStyle = dataGridViewCellStyle3;
             OddFinal.HeaderText = "Odd Final";
             OddFinal.Name = "OddFinal";
             OddFinal.ReadOnly = true;
             // 
             // ValorAposta
             // 
-            dataGridViewCellStyle12.Alignment = DataGridViewContentAlignment.TopCenter;
-            dataGridViewCellStyle12.Format = "C2";
-            dataGridViewCellStyle12.NullValue = null;
-            ValorAposta.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.TopCenter;
+            dataGridViewCellStyle4.Format = "C2";
+            dataGridViewCellStyle4.NullValue = null;
+            ValorAposta.DefaultCellStyle = dataGridViewCellStyle4;
             ValorAposta.HeaderText = "Valor de Aposta";
             ValorAposta.Name = "ValorAposta";
             ValorAposta.ReadOnly = true;
@@ -341,8 +342,9 @@
             Controls.Add(comboBoxEsportes);
             Controls.Add(dataGridEspeciais);
             Controls.Add(lblEsportes);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "TelaPrincipal";
-            Text = "TelaPrincipal";
+            Text = "Tela Principal";
             Load += TelaPrincipal_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridEspeciais).EndInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
