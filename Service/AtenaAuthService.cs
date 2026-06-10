@@ -136,5 +136,25 @@ namespace ProjetoEspeciais.Service
             if (File.Exists(TOKEN_PATH))
                 File.Delete(TOKEN_PATH);
         }
+
+
+        public async Task<bool> TestarTokenAsync()
+        {
+            try
+            {
+                var request = new HttpRequestMessage(HttpMethod.Get,
+                    "https://api.certified.apispt.net/atn/api/common/list/esporte_empresa?columns=id_tipo_esporte+AS+id&filter=id_empresa+%3D+2&related=tipo_esporte:nome+as+nome&order=nome&limit=1");
+
+                request.Headers.Add("Authorization", $"Bearer {TokenValido.AccessToken.Trim()}");
+                request.Headers.Add("Origin", "https://bo-cert.sptservices.io");
+
+                var response = await _httpClient.SendAsync(request);
+                return response.IsSuccessStatusCode;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

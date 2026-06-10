@@ -103,10 +103,10 @@ namespace ProjetoEspeciais.Service
                 disputaIndireta = true, // A Super Odd é sempre uma disputa indireta, então definimos como true
                 especial = true, // A Super Odd é um tipo especial de evento, então definimos como true
                 idsEventosRelacionados = new int[] { idEventoRelacionado },// A API do Atena espera um array de ids relacionados, mesmo que seja apenas um evento, então colocamos o id dentro de um array
-                MomentoRealizacao = momentoRealizacao.ToString("yyyyMMddHHmmss")// O Atena exige a data nesse formato específico: yyyyMMddHHmmss
+                MomentoRealizacao = momentoRealizacao.AddHours(3).ToString("yyyyMMddHHmmss")// O Atena exige a data nesse formato específico: yyyyMMddHHmmss
             };
 
-            MessageBox.Show(JsonConvert.SerializeObject(payload, Formatting.Indented));
+            //MessageBox.Show(JsonConvert.SerializeObject(payload, Formatting.Indented));// Exibe o payload em formato JSON para verificar se está correto antes de enviar a requisição
 
             var response = await _httpClient.SendAsync(CriarRequest(HttpMethod.Post,
                 $"{BASE_URL}/business/evento/cadastrar", payload));
@@ -364,6 +364,8 @@ namespace ProjetoEspeciais.Service
                 string body = await response.Content.ReadAsStringAsync();
                 throw new Exception($"Erro ao configurar risco: {response.StatusCode} - {body}");
             }
+
+            MessageBox.Show(JsonConvert.SerializeObject(configRisco, Formatting.Indented));
         }
 
         // ═══════════════════════════════════════════════════════

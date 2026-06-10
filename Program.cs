@@ -11,17 +11,24 @@ namespace ProjetoEspeciais
             ApplicationConfiguration.Initialize();
 
             var authService = new AtenaAuthService();
+            bool tokenValido = false;
 
-            // Tenta carregar o token salvo — se ainda for válido, pula o login
             if (authService.CarregarTokenSalvo())
             {
-                // Token válido — abre direto a TelaPrincipal
+                tokenValido = authService.TestarTokenAsync()
+                                         .GetAwaiter()
+                                         .GetResult();
+            }
+
+            if (tokenValido)
+            {
                 Application.Run(new TelaPrincipal(authService));
             }
             else
             {
-                // Token inválido ou inexistente — abre a tela de login
-                using (var telaLogin = new TelaLogin())
+                authService.LimparTokenSalvo();
+
+                using (var telaLogin = new TelaLogin(forcarLogin: true))
                 {
                     if (telaLogin.ShowDialog() == DialogResult.OK)
                     {

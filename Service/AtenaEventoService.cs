@@ -86,6 +86,7 @@ namespace ProjetoEspeciais.Service
             var eventos = new List<EventoItem>();
             foreach (JObject item in array)
             {
+               
                 eventos.Add(new EventoItem
                 {
                     Id = item["id"]?.Value<int>() ?? 0,

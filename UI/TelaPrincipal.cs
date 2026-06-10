@@ -200,7 +200,8 @@ namespace ProjetoEspeciais.UI
                     }
 
                     // Monta o nome completo da super odd: "Evento - Nome Especial"
-                    string nomeCasa = $"{nomeEvento} - {nomeEspecial}";
+                    string nomeCasa = $"{nomeEvento.Replace(" x ", " vs ")} - {nomeEspecial}";
+                    MessageBox.Show($"apostaExclusivaLink: {apostaExclusivaLink}\napostasExclusivasNovosUsuarios: {apostasExclusivasNovosUsuarios}");
 
                     // Chama o serviço que faz os 4 passos do cadastro
                     await service.CadastrarSuperOddAsync(
@@ -231,6 +232,8 @@ namespace ProjetoEspeciais.UI
 
             MessageBox.Show($"Cadastro concluído!\n✅ Sucesso: {sucesso}\n❌ Falha: {falha}",
                 "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            dataGridEspeciais.Rows.Clear(); // Limpa o grid após o cadastro
         }
 
         // Busca o id do evento pelo nome no comboBoxEventos

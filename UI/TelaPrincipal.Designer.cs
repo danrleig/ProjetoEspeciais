@@ -346,9 +346,10 @@
             // 
             // btnCadastrarSuperOdds
             // 
-            btnCadastrarSuperOdds.Location = new Point(1762, 703);
+            btnCadastrarSuperOdds.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnCadastrarSuperOdds.Location = new Point(1752, 735);
             btnCadastrarSuperOdds.Name = "btnCadastrarSuperOdds";
-            btnCadastrarSuperOdds.Size = new Size(101, 29);
+            btnCadastrarSuperOdds.Size = new Size(111, 29);
             btnCadastrarSuperOdds.TabIndex = 23;
             btnCadastrarSuperOdds.Text = "Cadastrar";
             btnCadastrarSuperOdds.UseVisualStyleBackColor = true;
