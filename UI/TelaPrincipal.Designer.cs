@@ -61,6 +61,8 @@
             label2 = new Label();
             checkBoxLinkExclusivo = new CheckBox();
             checkBoxNovosUsuarios = new CheckBox();
+            label3 = new Label();
+            btnCadastrarSuperOdds = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridEspeciais).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
@@ -69,7 +71,8 @@
             // 
             lblEsportes.AutoSize = true;
             lblEsportes.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblEsportes.Location = new Point(12, 35);
+            lblEsportes.ForeColor = Color.White;
+            lblEsportes.Location = new Point(12, 33);
             lblEsportes.Name = "lblEsportes";
             lblEsportes.Size = new Size(74, 20);
             lblEsportes.TabIndex = 0;
@@ -79,7 +82,7 @@
             // dataGridEspeciais
             // 
             dataGridEspeciais.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dataGridEspeciais.BackgroundColor = SystemColors.GradientInactiveCaption;
+            dataGridEspeciais.BackgroundColor = Color.LavenderBlush;
             dataGridEspeciais.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridEspeciais.Columns.AddRange(new DataGridViewColumn[] { Esporte, Liga, DataEvento, Evento, NomeEspecial, Odd, ValorAumento, OddFinal, ValorAposta, RiscoEspecial, Tipo, PerfilEspecial });
             dataGridEspeciais.Location = new Point(12, 169);
@@ -149,7 +152,7 @@
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.TopCenter;
             dataGridViewCellStyle2.NullValue = null;
             ValorAumento.DefaultCellStyle = dataGridViewCellStyle2;
-            ValorAumento.HeaderText = "% de aumento";
+            ValorAumento.HeaderText = "% aumento";
             ValorAumento.Name = "ValorAumento";
             ValorAumento.ReadOnly = true;
             // 
@@ -192,7 +195,7 @@
             // comboBoxEsportes
             // 
             comboBoxEsportes.FormattingEnabled = true;
-            comboBoxEsportes.Location = new Point(81, 34);
+            comboBoxEsportes.Location = new Point(12, 55);
             comboBoxEsportes.Name = "comboBoxEsportes";
             comboBoxEsportes.Size = new Size(262, 23);
             comboBoxEsportes.TabIndex = 3;
@@ -209,7 +212,8 @@
             // 
             labelEventos.AutoSize = true;
             labelEventos.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelEventos.Location = new Point(689, 35);
+            labelEventos.ForeColor = Color.White;
+            labelEventos.Location = new Point(612, 32);
             labelEventos.Name = "labelEventos";
             labelEventos.Size = new Size(70, 20);
             labelEventos.TabIndex = 9;
@@ -219,7 +223,8 @@
             // 
             labelLigas.AutoSize = true;
             labelLigas.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            labelLigas.Location = new Point(349, 35);
+            labelLigas.ForeColor = Color.White;
+            labelLigas.Location = new Point(303, 32);
             labelLigas.Name = "labelLigas";
             labelLigas.Size = new Size(51, 20);
             labelLigas.TabIndex = 10;
@@ -228,7 +233,7 @@
             // comboBoxEventos
             // 
             comboBoxEventos.FormattingEnabled = true;
-            comboBoxEventos.Location = new Point(754, 34);
+            comboBoxEventos.Location = new Point(612, 55);
             comboBoxEventos.Name = "comboBoxEventos";
             comboBoxEventos.Size = new Size(339, 23);
             comboBoxEventos.TabIndex = 12;
@@ -237,7 +242,7 @@
             // comboBoxLigas
             // 
             comboBoxLigas.FormattingEnabled = true;
-            comboBoxLigas.Location = new Point(397, 34);
+            comboBoxLigas.Location = new Point(303, 55);
             comboBoxLigas.Name = "comboBoxLigas";
             comboBoxLigas.Size = new Size(286, 23);
             comboBoxLigas.TabIndex = 13;
@@ -245,9 +250,9 @@
             // 
             // btnPreencherGrid
             // 
-            btnPreencherGrid.Location = new Point(1822, 49);
+            btnPreencherGrid.Location = new Point(1656, 47);
             btnPreencherGrid.Name = "btnPreencherGrid";
-            btnPreencherGrid.Size = new Size(40, 29);
+            btnPreencherGrid.Size = new Size(62, 31);
             btnPreencherGrid.TabIndex = 14;
             btnPreencherGrid.Text = "OK";
             btnPreencherGrid.UseVisualStyleBackColor = true;
@@ -255,7 +260,7 @@
             // 
             // numericUpDown1
             // 
-            numericUpDown1.Location = new Point(1662, 37);
+            numericUpDown1.Location = new Point(1470, 55);
             numericUpDown1.Name = "numericUpDown1";
             numericUpDown1.Size = new Size(49, 23);
             numericUpDown1.TabIndex = 15;
@@ -264,9 +269,9 @@
             // comboBoxTipoSuperOdds
             // 
             comboBoxTipoSuperOdds.FormattingEnabled = true;
-            comboBoxTipoSuperOdds.Location = new Point(1152, 36);
+            comboBoxTipoSuperOdds.Location = new Point(979, 55);
             comboBoxTipoSuperOdds.Name = "comboBoxTipoSuperOdds";
-            comboBoxTipoSuperOdds.Size = new Size(300, 23);
+            comboBoxTipoSuperOdds.Size = new Size(295, 23);
             comboBoxTipoSuperOdds.TabIndex = 16;
             comboBoxTipoSuperOdds.SelectedIndexChanged += comboBoxTipoSuperOdds_SelectedIndexChanged;
             // 
@@ -274,7 +279,8 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label1.Location = new Point(1099, 34);
+            label1.ForeColor = Color.Transparent;
+            label1.Location = new Point(979, 32);
             label1.Name = "label1";
             label1.Size = new Size(47, 20);
             label1.TabIndex = 17;
@@ -284,7 +290,7 @@
             // comboBoxrisco
             // 
             comboBoxrisco.FormattingEnabled = true;
-            comboBoxrisco.Location = new Point(1516, 36);
+            comboBoxrisco.Location = new Point(1301, 55);
             comboBoxrisco.Name = "comboBoxrisco";
             comboBoxrisco.Size = new Size(140, 23);
             comboBoxrisco.TabIndex = 18;
@@ -294,7 +300,8 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(1458, 37);
+            label2.ForeColor = Color.White;
+            label2.Location = new Point(1301, 32);
             label2.Name = "label2";
             label2.Size = new Size(52, 20);
             label2.TabIndex = 19;
@@ -303,9 +310,11 @@
             // checkBoxLinkExclusivo
             // 
             checkBoxLinkExclusivo.AutoSize = true;
-            checkBoxLinkExclusivo.Location = new Point(1717, 34);
+            checkBoxLinkExclusivo.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            checkBoxLinkExclusivo.ForeColor = Color.White;
+            checkBoxLinkExclusivo.Location = new Point(1536, 34);
             checkBoxLinkExclusivo.Name = "checkBoxLinkExclusivo";
-            checkBoxLinkExclusivo.Size = new Size(99, 19);
+            checkBoxLinkExclusivo.Size = new Size(114, 21);
             checkBoxLinkExclusivo.TabIndex = 20;
             checkBoxLinkExclusivo.Text = "Link exclusivo";
             checkBoxLinkExclusivo.UseVisualStyleBackColor = true;
@@ -314,19 +323,45 @@
             // checkBoxNovosUsuarios
             // 
             checkBoxNovosUsuarios.AutoSize = true;
-            checkBoxNovosUsuarios.Location = new Point(1717, 59);
+            checkBoxNovosUsuarios.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            checkBoxNovosUsuarios.ForeColor = Color.White;
+            checkBoxNovosUsuarios.Location = new Point(1536, 59);
             checkBoxNovosUsuarios.Name = "checkBoxNovosUsuarios";
-            checkBoxNovosUsuarios.Size = new Size(90, 19);
+            checkBoxNovosUsuarios.Size = new Size(102, 21);
             checkBoxNovosUsuarios.TabIndex = 21;
             checkBoxNovosUsuarios.Text = "Novos users";
             checkBoxNovosUsuarios.UseVisualStyleBackColor = true;
             checkBoxNovosUsuarios.CheckedChanged += checkBoxNovosUsuarios_CheckedChanged;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label3.ForeColor = Color.Transparent;
+            label3.Location = new Point(1470, 32);
+            label3.Name = "label3";
+            label3.Size = new Size(42, 20);
+            label3.TabIndex = 22;
+            label3.Text = "Qtd: ";
+            // 
+            // btnCadastrarSuperOdds
+            // 
+            btnCadastrarSuperOdds.Location = new Point(1762, 703);
+            btnCadastrarSuperOdds.Name = "btnCadastrarSuperOdds";
+            btnCadastrarSuperOdds.Size = new Size(101, 29);
+            btnCadastrarSuperOdds.TabIndex = 23;
+            btnCadastrarSuperOdds.Text = "Cadastrar";
+            btnCadastrarSuperOdds.UseVisualStyleBackColor = true;
+            btnCadastrarSuperOdds.Click += btnCadastrarSuperOdds_Click;
+            // 
             // TelaPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.FromArgb(30, 30, 47);
             ClientSize = new Size(1875, 890);
+            Controls.Add(btnCadastrarSuperOdds);
+            Controls.Add(label3);
             Controls.Add(checkBoxNovosUsuarios);
             Controls.Add(checkBoxLinkExclusivo);
             Controls.Add(label2);
@@ -342,6 +377,7 @@
             Controls.Add(comboBoxEsportes);
             Controls.Add(dataGridEspeciais);
             Controls.Add(lblEsportes);
+            Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "TelaPrincipal";
             Text = "Tela Principal";
@@ -383,5 +419,7 @@
         private CheckBox checkBoxLinkExclusivo;
         private CheckBox checkBoxNovosUsuarios;
         private DataGridViewTextBoxColumn PerfilEspecial;
+        private Label label3;
+        private Button btnCadastrarSuperOdds;
     }
 }
