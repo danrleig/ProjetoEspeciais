@@ -134,7 +134,7 @@ namespace ProjetoEspeciais.UI
             var service = new AtenaCadastroSuperOddService(_authService);
             int sucesso = 0;
             int falha = 0;
-
+            var links = new System.Text.StringBuilder();
             // Percorre cada linha do grid
             foreach (DataGridViewRow row in dataGridEspeciais.Rows)
             {
@@ -204,17 +204,22 @@ namespace ProjetoEspeciais.UI
                     MessageBox.Show($"apostaExclusivaLink: {apostaExclusivaLink}\napostasExclusivasNovosUsuarios: {apostasExclusivasNovosUsuarios}");
 
                     // Chama o serviço que faz os 4 passos do cadastro
-                    await service.CadastrarSuperOddAsync(
-                        idGrupoEvento,
-                        nomeCasa,
-                        idEventoRelacionado,
-                        momentoRealizacao,
-                        oddFinal,
-                        oddOriginal,
-                        valorAposta,
-                        idPerfilRisco,
-                        apostaExclusivaLink,
-                        apostasExclusivasNovosUsuarios);
+                    string link = await service.CadastrarSuperOddAsync(
+                         idGrupoEvento,
+                         nomeCasa,
+                         idEventoRelacionado,
+                         momentoRealizacao,
+                         oddFinal,
+                         oddOriginal,
+                         valorAposta,
+                         idPerfilRisco,
+                         apostaExclusivaLink,
+                         apostasExclusivasNovosUsuarios);
+                    if (!string.IsNullOrEmpty(link))
+                    {
+                        string dataHora = momentoRealizacao.ToString("dd/MM/yyyy HH:mm");
+                        links.AppendLine($"{nomeEvento} | {dataHora} | {nomeCasa} |{link}");
+                    }
 
                     sucesso++;
                 }
@@ -225,6 +230,15 @@ namespace ProjetoEspeciais.UI
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+
+            if (links.Length > 0)
+            {
+                textboxLinkEspecial.Visible = true;
+                label4.Visible = true;
+                textboxLinkEspecial.Text = links.ToString();
+            }
+            else
+                textboxLinkEspecial.Clear();
 
             // Reabilita o botão
             btnCadastrarSuperOdds.Enabled = true;
@@ -254,12 +268,15 @@ namespace ProjetoEspeciais.UI
 
             this.WindowState = FormWindowState.Maximized;
 
-
+            textboxLinkEspecial.Visible = true;
+            textboxLinkEspecial.TextAlign = HorizontalAlignment.Left;
+            textboxLinkEspecial.ReadOnly = true;
+            label4.Visible = true;
             dataGridEspeciais.AllowUserToAddRows = false;
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
             dataGridEspeciais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dataGridEspeciais.ScrollBars = ScrollBars.Vertical; // só scroll vertical
-            //dataGridEspeciais.BackgroundColor = Color.White;
+            
 
             dataGridEspeciais.Columns["Esporte"].ReadOnly = true;// Esporte não pode ser editado diretamente na grid, só pela seleção
             dataGridEspeciais.Columns["Esporte"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -712,6 +729,14 @@ namespace ProjetoEspeciais.UI
 
         }
 
-        
+        private void textboxLinkEspecial_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

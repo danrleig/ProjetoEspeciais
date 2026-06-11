@@ -63,6 +63,8 @@
             checkBoxNovosUsuarios = new CheckBox();
             label3 = new Label();
             btnCadastrarSuperOdds = new Button();
+            textboxLinkEspecial = new TextBox();
+            label4 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridEspeciais).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
@@ -355,12 +357,37 @@
             btnCadastrarSuperOdds.UseVisualStyleBackColor = true;
             btnCadastrarSuperOdds.Click += btnCadastrarSuperOdds_Click;
             // 
+            // textboxLinkEspecial
+            // 
+            textboxLinkEspecial.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textboxLinkEspecial.Location = new Point(303, 754);
+            textboxLinkEspecial.Multiline = true;
+            textboxLinkEspecial.Name = "textboxLinkEspecial";
+            textboxLinkEspecial.Size = new Size(1138, 134);
+            textboxLinkEspecial.TabIndex = 24;
+            textboxLinkEspecial.TextAlign = HorizontalAlignment.Center;
+            textboxLinkEspecial.TextChanged += textboxLinkEspecial_TextChanged;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label4.ForeColor = Color.White;
+            label4.Location = new Point(840, 731);
+            label4.Name = "label4";
+            label4.Size = new Size(111, 20);
+            label4.TabIndex = 25;
+            label4.Text = "Links especiais ";
+            label4.Click += label4_Click;
+            // 
             // TelaPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(30, 30, 47);
             ClientSize = new Size(1875, 890);
+            Controls.Add(label4);
+            Controls.Add(textboxLinkEspecial);
             Controls.Add(btnCadastrarSuperOdds);
             Controls.Add(label3);
             Controls.Add(checkBoxNovosUsuarios);
@@ -422,5 +449,7 @@
         private DataGridViewTextBoxColumn PerfilEspecial;
         private Label label3;
         private Button btnCadastrarSuperOdds;
+        private TextBox textboxLinkEspecial;
+        private Label label4;
     }
 }

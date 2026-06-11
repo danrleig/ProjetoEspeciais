@@ -372,7 +372,7 @@ namespace ProjetoEspeciais.Service
         // MÉTODO PRINCIPAL — Orquestra os 4 passos em sequência
         // É esse método que a TelaPrincipal vai chamar para cada linha do grid
         // ═══════════════════════════════════════════════════════
-        public async Task<bool> CadastrarSuperOddAsync(
+        public async Task<string> CadastrarSuperOddAsync(
             int idGrupoEvento,
             string nomeCasa,
             int idEventoRelacionado,
@@ -404,9 +404,60 @@ namespace ProjetoEspeciais.Service
                 idPerfilRisco, apostaExclusivaLink, apostasExclusivasNovosUsuarios);
 
             // Retorna true indicando que tudo correu bem
-            return true;
+            if (apostaExclusivaLink)
+            {
+                string slug = GerarLinkEspecial(nomeCasa);
+                return $"/esportes/especiais/super-odds/patrocinado/{slug}/{idEvento}";
+
+            }
+
+            return string.Empty;
         }
 
+
+        public string GerarLinkEspecial(string link)
+        { 
+            string slug = link.ToLowerInvariant();//converte para minusculo
+
+
+            slug = slug.Normalize(System.Text.NormalizationForm.FormD);
+            var sb = new System.Text.StringBuilder();
+
+            foreach (char c in slug)
+            { 
+                if (System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c)!= 
+                    System.Globalization.UnicodeCategory.NonSpacingMark)
+                    sb.Append(c);
+            
+            }
+            slug = sb.ToString().Normalize(System.Text.NormalizationForm.FormC);
+
+            slug = slug.Replace(".", "-")
+               .Replace("+", "")
+               .Replace(",", "")
+               .Replace("(", "")
+               .Replace(")", "")
+               .Replace("'", "")
+               .Replace("\"", "")
+               .Replace("_", "-")
+               .Replace("/", "-")
+               .Replace("\\", "-");
+
+
+            // Substitui espaços por hífen
+            slug = slug.Replace(" ", "-");
+
+            // Remove hífens duplos
+            while (slug.Contains("--"))
+                slug = slug.Replace("--", "-");
+
+            // Remove hífen no início ou fim
+            slug = slug.Trim('-');
+
+            return slug;
+
+
+        }
     }
 }
   
