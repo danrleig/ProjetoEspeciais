@@ -65,6 +65,7 @@
             btnCadastrarSuperOdds = new Button();
             textboxLinkEspecial = new TextBox();
             label4 = new Label();
+            btnLimparLista = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridEspeciais).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
@@ -90,7 +91,7 @@
             dataGridEspeciais.Location = new Point(12, 169);
             dataGridEspeciais.Name = "dataGridEspeciais";
             dataGridEspeciais.ReadOnly = true;
-            dataGridEspeciais.Size = new Size(1851, 418);
+            dataGridEspeciais.Size = new Size(1851, 497);
             dataGridEspeciais.TabIndex = 2;
             dataGridEspeciais.CellContentClick += dataGridEspeciais_CellContentClick;
             dataGridEspeciais.CellEndEdit += dataGridEspeciais_CellEndEdit;
@@ -380,12 +381,24 @@
             label4.Text = "Links especiais ";
             label4.Click += label4_Click;
             // 
+            // btnLimparLista
+            // 
+            btnLimparLista.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLimparLista.Location = new Point(1365, 894);
+            btnLimparLista.Name = "btnLimparLista";
+            btnLimparLista.Size = new Size(111, 29);
+            btnLimparLista.TabIndex = 26;
+            btnLimparLista.Text = "Limpar";
+            btnLimparLista.UseVisualStyleBackColor = true;
+            btnLimparLista.Click += btnLimparLista_Click;
+            // 
             // TelaPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(30, 30, 47);
-            ClientSize = new Size(1875, 890);
+            ClientSize = new Size(1875, 969);
+            Controls.Add(btnLimparLista);
             Controls.Add(label4);
             Controls.Add(textboxLinkEspecial);
             Controls.Add(btnCadastrarSuperOdds);
@@ -451,5 +464,6 @@
         private Button btnCadastrarSuperOdds;
         private TextBox textboxLinkEspecial;
         private Label label4;
+        private Button btnLimparLista;
     }
 }

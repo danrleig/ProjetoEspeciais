@@ -365,7 +365,7 @@ namespace ProjetoEspeciais.Service
                 throw new Exception($"Erro ao configurar risco: {response.StatusCode} - {body}");
             }
 
-            MessageBox.Show(JsonConvert.SerializeObject(configRisco, Formatting.Indented));
+            //MessageBox.Show(JsonConvert.SerializeObject(configRisco, Formatting.Indented));
         }
 
         // ═══════════════════════════════════════════════════════

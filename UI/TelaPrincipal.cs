@@ -11,11 +11,14 @@ using System.Web;
 
 namespace ProjetoEspeciais.UI
 {
+    using System.Linq;
+
     public partial class TelaPrincipal : Form
     {
+
         // Guarda o serviço de autenticação recebido — tem o token válido
         private readonly AtenaAuthService _authService;
-
+        private List<EventoItem> _eventosOriginais = new();
         // Construtor agora RECEBE o authService como parâmetro
         public TelaPrincipal(AtenaAuthService authService)
         {
@@ -120,6 +123,9 @@ namespace ProjetoEspeciais.UI
                 "R$2.000,00" => 22,
                 "R$5.000,00" => 18,
                 "R$10.000,00" => 20,
+                "R$15.000,00" => 21,
+                "R$20.000,00" => 23,
+                "R$40.000,00" => 25,
                 _ => 22 // padrão 2k se não reconhecer
             };
 
@@ -268,15 +274,15 @@ namespace ProjetoEspeciais.UI
 
             this.WindowState = FormWindowState.Maximized;
 
-            textboxLinkEspecial.Visible = true;
+            textboxLinkEspecial.Visible = false;
             textboxLinkEspecial.TextAlign = HorizontalAlignment.Left;
             textboxLinkEspecial.ReadOnly = true;
-            label4.Visible = true;
+            label4.Visible = false;
             dataGridEspeciais.AllowUserToAddRows = false;
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
             dataGridEspeciais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dataGridEspeciais.ScrollBars = ScrollBars.Vertical; // só scroll vertical
-            
+
 
             dataGridEspeciais.Columns["Esporte"].ReadOnly = true;// Esporte não pode ser editado diretamente na grid, só pela seleção
             dataGridEspeciais.Columns["Esporte"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -355,7 +361,14 @@ namespace ProjetoEspeciais.UI
             comboBoxrisco.Items.Add("R$2.000,00");
             comboBoxrisco.Items.Add("R$5.000,00");
             comboBoxrisco.Items.Add("R$10.000,00");
+            comboBoxrisco.Items.Add("R$15.000,00");
+            comboBoxrisco.Items.Add("R$20.000,00");
+            comboBoxrisco.Items.Add("R$40.000,00");
             comboBoxrisco.DropDownStyle = ComboBoxStyle.DropDownList;// Impede que o usuário digite um valor, só pode escolher entre as opções
+
+
+            comboBoxEventos.DropDownStyle = ComboBoxStyle.DropDown;
+            comboBoxEventos.TextUpdate += comboBoxEventos_TextUpdate;
 
             // Adiciona coluna de exclusão com ícone de lixeira
             var colunaExcluir = new DataGridViewButtonColumn();
@@ -375,7 +388,31 @@ namespace ProjetoEspeciais.UI
             colunaExcluir.Resizable = DataGridViewTriState.False;
             await CarregarEsportesAsync();
         }
+        private void comboBoxEventos_TextUpdate(object sender, EventArgs e)
+        {
+            string texto = comboBoxEventos.Text;
 
+            var filtrados = _eventosOriginais
+                .Where(x => x.Nome.Contains(
+                    texto,
+                    StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            comboBoxEventos.BeginUpdate();
+
+            comboBoxEventos.Items.Clear();
+
+            foreach (var evento in filtrados)
+            {
+                comboBoxEventos.Items.Add(evento);
+            }
+
+            comboBoxEventos.EndUpdate();
+
+            comboBoxEventos.DroppedDown = true;
+            comboBoxEventos.SelectionStart = texto.Length;
+            comboBoxEventos.SelectionLength = 0;
+        }
 
 
         private async Task CarregarEsportesAsync()
@@ -468,6 +505,8 @@ namespace ProjetoEspeciais.UI
 
                 var service = new AtenaEventoService(_authService);
                 var eventos = await service.BuscarEventosAsync(idLiga);
+
+                _eventosOriginais = eventos;
 
                 foreach (var evento in eventos)
                     comboBoxEventos.Items.Add(evento);
@@ -737,6 +776,14 @@ namespace ProjetoEspeciais.UI
         private void label4_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnLimparLista_Click(object sender, EventArgs e)
+        {
+            textboxLinkEspecial.Clear();
+            textboxLinkEspecial.Visible = false;
+            label4.Visible = false;
+            btnLimparLista.Visible = false;
         }
     }
 }
