@@ -18,7 +18,11 @@ namespace ProjetoEspeciais.UI
 
         // Guarda o serviço de autenticação recebido — tem o token válido
         private readonly AtenaAuthService _authService;
+
         private List<EventoItem> _eventosOriginais = new();
+        private List<EsporteItem> _esportesOriginais = new();
+        private List<LigaItem> _ligasOriginais = new();
+
         // Construtor agora RECEBE o authService como parâmetro
         public TelaPrincipal(AtenaAuthService authService)
         {
@@ -207,7 +211,7 @@ namespace ProjetoEspeciais.UI
 
                     // Monta o nome completo da super odd: "Evento - Nome Especial"
                     string nomeCasa = $"{nomeEvento.Replace(" x ", " vs ")} - {nomeEspecial}";
-                    MessageBox.Show($"apostaExclusivaLink: {apostaExclusivaLink}\napostasExclusivasNovosUsuarios: {apostasExclusivasNovosUsuarios}");
+                    //MessageBox.Show($"apostaExclusivaLink: {apostaExclusivaLink}\napostasExclusivasNovosUsuarios: {apostasExclusivasNovosUsuarios}"); 
 
                     // Chama o serviço que faz os 4 passos do cadastro
                     string link = await service.CadastrarSuperOddAsync(
@@ -254,6 +258,7 @@ namespace ProjetoEspeciais.UI
                 "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             dataGridEspeciais.Rows.Clear(); // Limpa o grid após o cadastro
+            btnLimparLista.Enabled = true;
         }
 
         // Busca o id do evento pelo nome no comboBoxEventos
@@ -278,6 +283,7 @@ namespace ProjetoEspeciais.UI
             textboxLinkEspecial.TextAlign = HorizontalAlignment.Left;
             textboxLinkEspecial.ReadOnly = true;
             label4.Visible = false;
+            btnLimparLista.Visible = false;
             dataGridEspeciais.AllowUserToAddRows = false;
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
             dataGridEspeciais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
@@ -369,6 +375,10 @@ namespace ProjetoEspeciais.UI
 
             comboBoxEventos.DropDownStyle = ComboBoxStyle.DropDown;
             comboBoxEventos.TextUpdate += comboBoxEventos_TextUpdate;
+            comboBoxEsportes.DropDownStyle = ComboBoxStyle.DropDown;
+            comboBoxLigas.DropDownStyle = ComboBoxStyle.DropDown;
+            comboBoxEsportes.TextUpdate += comboBoxEsportes_TextUpdate;
+            comboBoxLigas.TextUpdate += comboBoxLigas_TextUpdate;
 
             // Adiciona coluna de exclusão com ícone de lixeira
             var colunaExcluir = new DataGridViewButtonColumn();
@@ -388,7 +398,80 @@ namespace ProjetoEspeciais.UI
             colunaExcluir.Resizable = DataGridViewTriState.False;
             await CarregarEsportesAsync();
         }
-        private void comboBoxEventos_TextUpdate(object sender, EventArgs e)
+
+        private void comboBoxLigas_TextUpdate(object sender, EventArgs e)// Implementa o filtro de pesquisa para o comboBoxLigas, filtrando a lista original de ligas conforme o usuário digita, e atualizando as opções do comboBox em tempo real
+        {
+            string texto = comboBoxLigas.Text;
+
+            var filtrados = _ligasOriginais
+                .Where(x => x.Nome.Contains(
+                    texto,
+                    StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            comboBoxLigas.BeginUpdate();
+
+            comboBoxLigas.Items.Clear();
+
+            foreach (var liga in filtrados)
+            {
+                comboBoxLigas.Items.Add(liga);
+            }
+
+            comboBoxLigas.EndUpdate();
+
+            comboBoxLigas.Text = texto;
+
+            comboBoxLigas.SelectionStart = comboBoxLigas.Text.Length;
+
+            comboBoxLigas.SelectionLength = 0;
+
+            Cursor.Current = Cursors.Default;
+            comboBoxLigas.DroppedDown = true;
+
+            if (filtrados.Count > 0)
+            {
+                comboBoxLigas.DroppedDown = true;
+            }
+        }
+
+        private void comboBoxEsportes_TextUpdate(object sender, EventArgs e)// Implementa o filtro de pesquisa para o comboBoxEsportes, filtrando a lista original de esportes conforme o usuário digita, e atualizando as opções do comboBox em tempo real
+        {
+            string texto = comboBoxEsportes.Text;
+
+            var filtrados = _esportesOriginais
+                .Where(x => x.Nome.Contains(
+                    texto,
+                    StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            comboBoxEsportes.BeginUpdate();
+
+            comboBoxEsportes.Items.Clear();
+
+            foreach (var esporte in filtrados)
+            {
+                comboBoxEsportes.Items.Add(esporte);
+            }
+
+            comboBoxEsportes.EndUpdate();
+
+            comboBoxEsportes.Text = texto;
+
+            comboBoxEsportes.SelectionStart = comboBoxEsportes.Text.Length;
+
+            comboBoxEsportes.SelectionLength = 0;
+
+            Cursor.Current = Cursors.Default;
+            comboBoxEsportes.DroppedDown = true;
+
+            if (filtrados.Count > 0)
+            {
+                comboBoxEsportes.DroppedDown = true;
+            }
+        }
+
+        private void comboBoxEventos_TextUpdate(object sender, EventArgs e)// Implementa o filtro de pesquisa para o comboBoxEventos, filtrando a lista original de eventos conforme o usuário digita, e atualizando as opções do comboBox em tempo real
         {
             string texto = comboBoxEventos.Text;
 
@@ -409,9 +492,20 @@ namespace ProjetoEspeciais.UI
 
             comboBoxEventos.EndUpdate();
 
-            comboBoxEventos.DroppedDown = true;
-            comboBoxEventos.SelectionStart = texto.Length;
+            comboBoxEventos.Text = texto;
+
+            comboBoxEventos.SelectionStart = comboBoxEventos.Text.Length;
+
             comboBoxEventos.SelectionLength = 0;
+
+
+            Cursor.Current = Cursors.Default;
+            comboBoxEventos.DroppedDown = true;
+
+            if (filtrados.Count > 0)
+            {
+                comboBoxEventos.DroppedDown = true;
+            }
         }
 
 
@@ -422,11 +516,13 @@ namespace ProjetoEspeciais.UI
                 comboBoxEsportes.SelectedIndexChanged -= comboBoxEsportes_SelectedIndexChanged;
                 comboBoxEsportes.Enabled = false;
                 comboBoxEsportes.Items.Clear();
-                comboBoxEsportes.Items.Add("Escolha o Esporte");
+                comboBoxEsportes.Items.Add("");
                 comboBoxEsportes.SelectedIndex = 0;
 
                 var esporteService = new AtenaEsporteService(_authService);
                 var esportes = await esporteService.BuscarEsportesAsync();
+
+                _esportesOriginais = esportes;// Guarda a lista original para o filtro de pesquisa no comboBoxEsportes
 
                 comboBoxEsportes.Items.Clear();
                 foreach (var esporte in esportes)
@@ -469,6 +565,7 @@ namespace ProjetoEspeciais.UI
 
                 var service = new AtenaEventoService(_authService);
                 var ligas = await service.BuscarLigasAsync(idEsporte);
+                _ligasOriginais = ligas;// Guarda a lista original para o filtro de pesquisa no comboBoxLigas
 
                 foreach (var liga in ligas)
                     comboBoxLigas.Items.Add(liga);
@@ -506,7 +603,7 @@ namespace ProjetoEspeciais.UI
                 var service = new AtenaEventoService(_authService);
                 var eventos = await service.BuscarEventosAsync(idLiga);
 
-                _eventosOriginais = eventos;
+                _eventosOriginais = eventos;// Guarda a lista original para o filtro de pesquisa no comboBoxEventos
 
                 foreach (var evento in eventos)
                     comboBoxEventos.Items.Add(evento);
