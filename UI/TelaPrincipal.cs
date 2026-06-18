@@ -244,6 +244,7 @@ namespace ProjetoEspeciais.UI
             if (links.Length > 0)
             {
                 textboxLinkEspecial.Visible = true;
+                btnLimparLista.Enabled = true;
                 label4.Visible = true;
                 textboxLinkEspecial.Text = links.ToString();
             }
@@ -258,7 +259,7 @@ namespace ProjetoEspeciais.UI
                 "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             dataGridEspeciais.Rows.Clear(); // Limpa o grid após o cadastro
-            btnLimparLista.Enabled = true;
+            
         }
 
         // Busca o id do evento pelo nome no comboBoxEventos
@@ -687,6 +688,12 @@ namespace ProjetoEspeciais.UI
             if (colunas.Contains(nomeColuna))
             {
                 string valor = e.FormattedValue.ToString();
+                if (nomeColuna == "ValorAposta")
+                {
+                    valor = valor
+                        .Replace("R$", "")
+                        .Trim();
+                }
 
                 if (!string.IsNullOrEmpty(valor) && !decimal.TryParse(valor, out _))
                 {
