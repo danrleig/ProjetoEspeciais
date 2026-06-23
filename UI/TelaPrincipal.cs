@@ -33,6 +33,8 @@ namespace ProjetoEspeciais.UI
         private async void TelaPrincipal_Load(object sender, EventArgs e)
         {
             FormatarGrid();
+
+
         }
 
         // Chamado sempre que receber erro 401 (token expirado ou sessão inválida)
@@ -92,6 +94,7 @@ namespace ProjetoEspeciais.UI
 
         private async void btnCadastrarSuperOdds_Click(object sender, EventArgs e)
         {
+           
             // Valida se há linhas no grid para cadastrar
             if (dataGridEspeciais.Rows.Count == 0)
             {
@@ -244,7 +247,7 @@ namespace ProjetoEspeciais.UI
             if (links.Length > 0)
             {
                 textboxLinkEspecial.Visible = true;
-                btnLimparLista.Enabled = true;
+                btnLimparLista.Visible = true;
                 label4.Visible = true;
                 textboxLinkEspecial.Text = links.ToString();
             }
@@ -286,6 +289,7 @@ namespace ProjetoEspeciais.UI
             label4.Visible = false;
             btnLimparLista.Visible = false;
             dataGridEspeciais.AllowUserToAddRows = false;
+            dataGridEspeciais.KeyDown += dataGridEspeciais_KeyDown;
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
             dataGridEspeciais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dataGridEspeciais.ScrollBars = ScrollBars.Vertical; // só scroll vertical
@@ -399,7 +403,62 @@ namespace ProjetoEspeciais.UI
             colunaExcluir.Resizable = DataGridViewTriState.False;
             await CarregarEsportesAsync();
         }
+        private void dataGridEspeciais_KeyDown(object sender, KeyEventArgs e)// Permite colar dados do Excel no grid usando Ctrl+V
+        {
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                ColarDadosGrid();
+                e.Handled = true;
+            }
+        }
+        private void ColarDadosGrid()// Permite colar dados do Excel no grid, respeitando a posição da célula selecionada e ignorando colunas protegidas
+        {
+            string texto = Clipboard.GetText();
 
+            if (string.IsNullOrWhiteSpace(texto))
+                return;
+
+            if (dataGridEspeciais.CurrentCell == null)
+                return;
+
+            int linhaInicial = dataGridEspeciais.CurrentCell.RowIndex;
+            int colunaInicial = dataGridEspeciais.CurrentCell.ColumnIndex;
+
+            string[] linhas = texto.Split(
+                new[] { "\r\n", "\n" },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < linhas.Length; i++)
+            {
+                string[] colunas = linhas[i].Split('\t');
+
+                int linhaDestino = linhaInicial + i;
+
+                while (linhaDestino >= dataGridEspeciais.Rows.Count)
+                {
+                    dataGridEspeciais.Rows.Add();
+                }
+
+                for (int j = 0; j < colunas.Length; j++)
+                {
+                    int colunaDestino = colunaInicial + j;
+
+                    if (colunaDestino >= dataGridEspeciais.Columns.Count)
+                        continue;
+
+                    string nomeColuna =
+                        dataGridEspeciais.Columns[colunaDestino].Name;
+
+                    // Ignora colunas protegidas
+                    if (nomeColuna == "Excluir")
+                        continue;
+
+                    dataGridEspeciais.Rows[linhaDestino]
+                        .Cells[colunaDestino]
+                        .Value = colunas[j].Trim();
+                }
+            }
+        }
         private void comboBoxLigas_TextUpdate(object sender, EventArgs e)// Implementa o filtro de pesquisa para o comboBoxLigas, filtrando a lista original de ligas conforme o usuário digita, e atualizando as opções do comboBox em tempo real
         {
             string texto = comboBoxLigas.Text;

@@ -364,7 +364,7 @@
             textboxLinkEspecial.Location = new Point(303, 754);
             textboxLinkEspecial.Multiline = true;
             textboxLinkEspecial.Name = "textboxLinkEspecial";
-            textboxLinkEspecial.Size = new Size(1138, 134);
+            textboxLinkEspecial.Size = new Size(1216, 134);
             textboxLinkEspecial.TabIndex = 24;
             textboxLinkEspecial.TextAlign = HorizontalAlignment.Center;
             textboxLinkEspecial.TextChanged += textboxLinkEspecial_TextChanged;
@@ -384,7 +384,7 @@
             // btnLimparLista
             // 
             btnLimparLista.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnLimparLista.Location = new Point(1365, 894);
+            btnLimparLista.Location = new Point(1408, 894);
             btnLimparLista.Name = "btnLimparLista";
             btnLimparLista.Size = new Size(111, 29);
             btnLimparLista.TabIndex = 26;
