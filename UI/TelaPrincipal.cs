@@ -218,7 +218,7 @@ namespace ProjetoEspeciais.UI
                     if (!string.IsNullOrEmpty(link))
                     {
                         string dataHora = momentoRealizacao.ToString("dd/MM/yyyy HH:mm");
-                        links.AppendLine($"{nomeEvento} | {dataHora} | {nomeCasa} |{link}");
+                        links.AppendLine($"{nomeEvento} | {dataHora} | {nomeCasa} - {link}");
                     }
 
                     sucesso++;
