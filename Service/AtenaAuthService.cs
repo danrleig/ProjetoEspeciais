@@ -19,7 +19,7 @@ namespace ProjetoEspeciais.Service
     public class AtenaAuthService
     {
         private static readonly HttpClient _httpClient = new HttpClient(); //Um objeto que será salvo dentro de uma variavel estática, ou seja, compartilhada por todas as instâncias da classe AtenaAuthService. Ele é usado para fazer requisições HTTP.
-
+      
         private const string LOGIN_URL = "https://api.certified.apispt.net/atn/login";
         private const string ORIGIN = "https://bo-cert.sptservices.io";
         public AtenaToken TokenValido { get; set; }

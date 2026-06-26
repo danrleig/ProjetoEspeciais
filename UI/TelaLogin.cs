@@ -146,6 +146,7 @@ namespace ProjetoEspeciais.UI
 
                 // Desserializa o JSON para pegar o token
                 var json = Newtonsoft.Json.Linq.JObject.Parse(body);
+
                 string accessToken = json["accessToken"]?.ToString();
                 string refreshToken = json["refreshToken"]?.ToString();
                 string csrf = json["csrf"]?.ToString();
@@ -159,6 +160,8 @@ namespace ProjetoEspeciais.UI
                 {
                     // Cria e preenche o AuthService com o token capturado
                     AuthService = new AtenaAuthService();
+
+
                     AuthService.DefinirToken(new Data.AtenaToken
                     {
                         AccessToken = accessToken,

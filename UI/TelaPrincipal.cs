@@ -1,20 +1,30 @@
-﻿using System;
+﻿using ProjetoEspeciais.Data;
+using ProjetoEspeciais.Service;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
-using ProjetoEspeciais.Service;
-using ProjetoEspeciais.Data;
 using System.Web;
+using System.Windows.Forms;
 
 namespace ProjetoEspeciais.UI
 {
+    using System.Linq;
+    using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
     public partial class TelaPrincipal : Form
     {
+
         // Guarda o serviço de autenticação recebido — tem o token válido
         private readonly AtenaAuthService _authService;
+
+        private List<EventoItem> _eventosOriginais = new();
+        private List<EsporteItem> _esportesOriginais = new();
+        private List<LigaItem> _ligasOriginais = new();
+
+
 
         // Construtor agora RECEBE o authService como parâmetro
         public TelaPrincipal(AtenaAuthService authService)
@@ -26,6 +36,8 @@ namespace ProjetoEspeciais.UI
         private async void TelaPrincipal_Load(object sender, EventArgs e)
         {
             FormatarGrid();
+            this.AutoScaleMode = AutoScaleMode.Dpi;
+
         }
 
         // Chamado sempre que receber erro 401 (token expirado ou sessão inválida)
@@ -85,6 +97,8 @@ namespace ProjetoEspeciais.UI
 
         private async void btnCadastrarSuperOdds_Click(object sender, EventArgs e)
         {
+
+
             // Valida se há linhas no grid para cadastrar
             if (dataGridEspeciais.Rows.Count == 0)
             {
@@ -109,6 +123,9 @@ namespace ProjetoEspeciais.UI
                 return;
             }
 
+            if (!ValidarGridAntesCadastro())
+                return;
+
             // Converte o tipo selecionado para o id do grupo evento
             int idGrupoEvento = comboBoxTipoSuperOdds.SelectedItem.ToString().Contains("Múltiplas Escolhas")
                 ? 1273
@@ -120,6 +137,9 @@ namespace ProjetoEspeciais.UI
                 "R$2.000,00" => 22,
                 "R$5.000,00" => 18,
                 "R$10.000,00" => 20,
+                "R$15.000,00" => 21,
+                "R$20.000,00" => 23,
+                "R$40.000,00" => 25,
                 _ => 22 // padrão 2k se não reconhecer
             };
 
@@ -135,6 +155,7 @@ namespace ProjetoEspeciais.UI
             int sucesso = 0;
             int falha = 0;
             var links = new System.Text.StringBuilder();
+            int contador = 1;
             // Percorre cada linha do grid
             foreach (DataGridViewRow row in dataGridEspeciais.Rows)
             {
@@ -201,7 +222,7 @@ namespace ProjetoEspeciais.UI
 
                     // Monta o nome completo da super odd: "Evento - Nome Especial"
                     string nomeCasa = $"{nomeEvento.Replace(" x ", " vs ")} - {nomeEspecial}";
-                    MessageBox.Show($"apostaExclusivaLink: {apostaExclusivaLink}\napostasExclusivasNovosUsuarios: {apostasExclusivasNovosUsuarios}");
+                    //MessageBox.Show($"apostaExclusivaLink: {apostaExclusivaLink}\napostasExclusivasNovosUsuarios: {apostasExclusivasNovosUsuarios}"); 
 
                     // Chama o serviço que faz os 4 passos do cadastro
                     string link = await service.CadastrarSuperOddAsync(
@@ -217,8 +238,25 @@ namespace ProjetoEspeciais.UI
                          apostasExclusivasNovosUsuarios);
                     if (!string.IsNullOrEmpty(link))
                     {
-                        string dataHora = momentoRealizacao.ToString("dd/MM/yyyy HH:mm");
-                        links.AppendLine($"{nomeEvento} | {dataHora} | {nomeCasa} - {link}");
+                        if (!string.IsNullOrEmpty(link))
+                        {
+                            string dataHora = momentoRealizacao.ToString("dd/MM/yyyy HH:mm");
+                            string risco = row.Cells["RiscoEspecial"].Value?.ToString();
+
+                            links.AppendLine(
+                        $@"{contador,-2} - {nomeEvento} | {dataHora}
+                            {"Evento:"} {nomeEvento}
+                            {"Nome Especial:"} {nomeEspecial}
+                            {"📈 Odd:"} {oddOriginal}
+                            {"🚀 Super odds:"} {oddFinal}
+                            {"💰 Valor aposta:"} {valorAposta:C}
+                            {"⚠️ Risco:"} {risco}
+                            {"🔗 Link:"} {link}
+                            ------------------------------------------------------------------------");
+
+                            contador++;
+                        }
+
                     }
 
                     sucesso++;
@@ -234,6 +272,7 @@ namespace ProjetoEspeciais.UI
             if (links.Length > 0)
             {
                 textboxLinkEspecial.Visible = true;
+                btnLimparLista.Visible = true;
                 label4.Visible = true;
                 textboxLinkEspecial.Text = links.ToString();
             }
@@ -248,6 +287,7 @@ namespace ProjetoEspeciais.UI
                 "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             dataGridEspeciais.Rows.Clear(); // Limpa o grid após o cadastro
+
         }
 
         // Busca o id do evento pelo nome no comboBoxEventos
@@ -262,26 +302,43 @@ namespace ProjetoEspeciais.UI
             return 0;
         }
 
-
         public async void FormatarGrid()
         {
 
             this.WindowState = FormWindowState.Maximized;
 
-            textboxLinkEspecial.Visible = true;
+            textboxLinkEspecial.Visible = false;
+            textboxLinkEspecial.Multiline = true;
+            textboxLinkEspecial.ScrollBars = ScrollBars.Vertical;
+            textboxLinkEspecial.WordWrap = false;
             textboxLinkEspecial.TextAlign = HorizontalAlignment.Left;
-            textboxLinkEspecial.ReadOnly = true;
-            label4.Visible = true;
+            textboxLinkEspecial.ReadOnly = true;// Impede que o usuário edite o conteúdo
+            dataGridEspeciais.RowTemplate.Height = 30;
+
+            label4.Visible = false;
+            btnLimparLista.Visible = false;
+
+            dataGridEspeciais.RowHeadersVisible = true;
+            dataGridEspeciais.RowHeadersWidth = 50;
             dataGridEspeciais.AllowUserToAddRows = false;
+            dataGridEspeciais.KeyDown += dataGridEspeciais_KeyDown;
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
             dataGridEspeciais.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.None;
             dataGridEspeciais.ScrollBars = ScrollBars.Vertical; // só scroll vertical
-            
+
+
+
+            dataGridEspeciais.RowPostPaint += dataGridEspeciais_RowPostPaint;
+            dataGridEspeciais.CellPainting -= dataGridEspeciais_CellPainting;
+            dataGridEspeciais.EditingControlShowing -= dataGridEspeciais_EditingControlShowing;
+            dataGridEspeciais.Paint -= dataGridEspeciais_Paint;
+
+
 
             dataGridEspeciais.Columns["Esporte"].ReadOnly = true;// Esporte não pode ser editado diretamente na grid, só pela seleção
             dataGridEspeciais.Columns["Esporte"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridEspeciais.Columns["Esporte"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridEspeciais.Columns["Esporte"].Width = 100;
+            dataGridEspeciais.Columns["Esporte"].Width = 95;
 
             dataGridEspeciais.Columns["Liga"].ReadOnly = true;// Liga não pode ser editada diretamente na grid, só pela seleção
             dataGridEspeciais.Columns["Liga"].Width = 250;
@@ -292,7 +349,7 @@ namespace ProjetoEspeciais.UI
             dataGridEspeciais.Columns["DataEvento"].ReadOnly = true;// Data do evento não pode ser editada diretamente na grid
             dataGridEspeciais.Columns["DataEvento"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;// Centraliza a data do evento
             dataGridEspeciais.Columns["DataEvento"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridEspeciais.Columns["DataEvento"].Width = 100;
+            dataGridEspeciais.Columns["DataEvento"].Width = 95;
 
             dataGridEspeciais.Columns["Evento"].ReadOnly = true;// Evento não pode ser editado diretamente na grid, só pela seleção
             dataGridEspeciais.Columns["Evento"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;// Centraliza o nome do especial
@@ -320,7 +377,7 @@ namespace ProjetoEspeciais.UI
             dataGridEspeciais.Columns["OddFinal"].Width = 85;
 
             dataGridEspeciais.Columns["ValorAposta"].ReadOnly = false;// Valor da aposta pode ser editado
-            dataGridEspeciais.Columns["ValorAposta"].Width = 114;
+            dataGridEspeciais.Columns["ValorAposta"].Width = 100;
             dataGridEspeciais.Columns["ValorAposta"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridEspeciais.Columns["ValorAposta"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -334,7 +391,7 @@ namespace ProjetoEspeciais.UI
             dataGridEspeciais.Columns["Tipo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridEspeciais.Columns["Tipo"].Width = 200;
 
-            dataGridEspeciais.Columns["PerfilEspecial"].Width = 93;
+            dataGridEspeciais.Columns["PerfilEspecial"].Width = 85;
             dataGridEspeciais.Columns["PerfilEspecial"].HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridEspeciais.Columns["PerfilEspecial"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
@@ -355,15 +412,31 @@ namespace ProjetoEspeciais.UI
             comboBoxrisco.Items.Add("R$2.000,00");
             comboBoxrisco.Items.Add("R$5.000,00");
             comboBoxrisco.Items.Add("R$10.000,00");
+            comboBoxrisco.Items.Add("R$15.000,00");
+            comboBoxrisco.Items.Add("R$20.000,00");
+            comboBoxrisco.Items.Add("R$40.000,00");
             comboBoxrisco.DropDownStyle = ComboBoxStyle.DropDownList;// Impede que o usuário digite um valor, só pode escolher entre as opções
+
+
+            comboBoxEventos.DropDownStyle = ComboBoxStyle.DropDown;
+            comboBoxEventos.TextUpdate += comboBoxEventos_TextUpdate;
+            comboBoxEsportes.DropDownStyle = ComboBoxStyle.DropDown;
+            comboBoxLigas.DropDownStyle = ComboBoxStyle.DropDown;
+            comboBoxEsportes.TextUpdate += comboBoxEsportes_TextUpdate;
+            comboBoxLigas.TextUpdate += comboBoxLigas_TextUpdate;
+
+
+            dataGridEspeciais.CellPainting += dataGridEspeciais_CellPainting; //NOVO
+
+
 
             // Adiciona coluna de exclusão com ícone de lixeira
             var colunaExcluir = new DataGridViewButtonColumn();
             colunaExcluir.Name = "Excluir";
-            colunaExcluir.HeaderText = "";
+            colunaExcluir.HeaderText = "🗑";
             colunaExcluir.Text = "🗑";
             colunaExcluir.UseColumnTextForButtonValue = true;
-            colunaExcluir.Width = 40;
+            colunaExcluir.Width = 37;
             colunaExcluir.FlatStyle = FlatStyle.Flat;
             dataGridEspeciais.Columns.Add(colunaExcluir);
 
@@ -375,8 +448,430 @@ namespace ProjetoEspeciais.UI
             colunaExcluir.Resizable = DataGridViewTriState.False;
             await CarregarEsportesAsync();
         }
+        private void dataGridEspeciais_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            string numero = (e.RowIndex + 1).ToString();
+
+            using (var brush = new SolidBrush(dataGridEspeciais.RowHeadersDefaultCellStyle.ForeColor))
+            {
+                e.Graphics.DrawString(
+                    numero,
+                    dataGridEspeciais.Font,
+                    brush,
+                    e.RowBounds.Left + 15,
+                    e.RowBounds.Top + 6);
+            }
+        }
+        private bool ValidarGridAntesCadastro()
+        {
+            for (int i = 0; i < dataGridEspeciais.Rows.Count; i++)
+            {
+                var row = dataGridEspeciais.Rows[i];
+
+                if (row.IsNewRow)
+                    continue;
+
+                int numeroLinha = row.Index + 1;
+
+                // Nome Especial
+                if (string.IsNullOrWhiteSpace(row.Cells["NomeEspecial"].Value?.ToString()))
+                {
+                    MessageBox.Show(
+                        $"Linha {numeroLinha}: O campo 'Nome Especial' está vazio.",
+                        "Validação",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    dataGridEspeciais.CurrentCell = row.Cells["NomeEspecial"];
+                    dataGridEspeciais.BeginEdit(true);
+                    return false;
+                }
+
+                // Odd
+                if (!decimal.TryParse(row.Cells["Odd"].Value?.ToString(), out decimal odd) || odd <= 0)
+                {
+                    MessageBox.Show(
+                        $"Linha {numeroLinha}: Informe uma Odd válida.",
+                        "Validação",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    dataGridEspeciais.CurrentCell = row.Cells["Odd"];
+                    dataGridEspeciais.BeginEdit(true);
+                    return false;
+                }
+
+                // % Aumento
+                if (!decimal.TryParse(row.Cells["ValorAumento"].Value?.ToString(), out decimal aumento))
+                {
+                    MessageBox.Show(
+                        $"Linha {numeroLinha}: Informe um % de aumento válido.",
+                        "Validação",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    dataGridEspeciais.CurrentCell = row.Cells["ValorAumento"];
+                    dataGridEspeciais.BeginEdit(true);
+                    return false;
+                }
+
+                // Odd Final
+                if (!decimal.TryParse(row.Cells["OddFinal"].Value?.ToString(), out decimal oddFinal) || oddFinal <= 0)
+                {
+                    MessageBox.Show(
+                        $"Linha {numeroLinha}: A Odd Final é inválida.",
+                        "Validação",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    dataGridEspeciais.CurrentCell = row.Cells["OddFinal"];
+                    return false;
+                }
+
+                // Valor da Aposta
+                string valorApostaTexto = row.Cells["ValorAposta"].Value?.ToString() ?? "";
+
+                decimal valorAposta;
+
+                bool valorValido = decimal.TryParse(
+                    valorApostaTexto.Replace("R$", "").Trim(),
+                    System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.GetCultureInfo("pt-BR"),
+                    out valorAposta);
+
+                if (!valorValido || valorAposta <= 0)
+                {
+                    MessageBox.Show(
+                        $"Linha {numeroLinha}: Informe um Valor da Aposta válido.",
+                        "Validação",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    dataGridEspeciais.CurrentCell = row.Cells["ValorAposta"];
+                    dataGridEspeciais.BeginEdit(true);
+                    return false;
+                }
+
+                // Limite de 100 caracteres
+                string evento = row.Cells["Evento"].Value?.ToString() ?? "";
+                string nomeEspecial = row.Cells["NomeEspecial"].Value?.ToString() ?? "";
+
+                string nomeCompleto = $"{evento.Replace(" x ", " vs ")} - {nomeEspecial}";
+
+                if (nomeCompleto.Length > 100)
+                {
+                    MessageBox.Show(
+                        $"Linha {numeroLinha}: O Nome Especial possui {nomeCompleto.Length} caracteres. O limite é 100.",
+                        "Validação",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+
+                    dataGridEspeciais.CurrentCell = row.Cells["NomeEspecial"];
+                    dataGridEspeciais.BeginEdit(true);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        private void dataGridEspeciais_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (dataGridEspeciais.CurrentCell == null)
+                return;
+
+            string nomeColuna =
+                dataGridEspeciais.Columns[
+                    dataGridEspeciais.CurrentCell.ColumnIndex
+                ].Name;
+
+            if ((e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back) &&
+                nomeColuna != "Excluir" && !dataGridEspeciais.CurrentCell.ReadOnly)
+            {
+                dataGridEspeciais.CurrentCell.Value = "";
+
+                dataGridEspeciais.InvalidateCell(dataGridEspeciais.CurrentCell);
+
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+
+                return;
+            }
+
+            if (e.Control && e.KeyCode == Keys.V)
+            {
+                ColarDadosGrid();
+
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
+
+        private void dataGridEspeciais_Paint(object sender, PaintEventArgs e)
+        {
+            if (dataGridEspeciais.CurrentCell == null)
+                return;
+
+            if (!dataGridEspeciais.IsCurrentCellInEditMode)
+                return;
+
+            if (dataGridEspeciais.CurrentCell.OwningColumn.Name != "NomeEspecial")
+                return;
+
+            int rowIndex = dataGridEspeciais.CurrentCell.RowIndex;
+            int columnIndex = dataGridEspeciais.CurrentCell.ColumnIndex;
+
+            Rectangle areaCelula = dataGridEspeciais.GetCellDisplayRectangle(
+                columnIndex,
+                rowIndex,
+                true);
+
+            if (areaCelula.Width <= 0 || areaCelula.Height <= 0)
+                return;
+
+            DesenharContadorCircular(
+                e.Graphics,
+                areaCelula,
+                dataGridEspeciais.Rows[rowIndex]);
+        }
+
+        private void ColarDadosGrid()
+        {
+            string texto = Clipboard.GetText();
+
+            if (string.IsNullOrWhiteSpace(texto))
+                return;
+
+            if (dataGridEspeciais.CurrentCell == null)
+                return;
+
+            int linhaInicial = dataGridEspeciais.CurrentCell.RowIndex;
+            int colunaInicial = dataGridEspeciais.CurrentCell.ColumnIndex;
+
+            string[] linhas = texto.Split(
+                new[] { "\r\n", "\n" },
+                StringSplitOptions.RemoveEmptyEntries);
+
+            for (int i = 0; i < linhas.Length; i++)
+            {
+                string[] colunas = linhas[i].Split('\t');
+                int linhaDestino = linhaInicial + i;
+
+                /*while (linhaDestino >= dataGridEspeciais.Rows.Count)
+                {
+                    dataGridEspeciais.Rows.Add();
+                }*///Permite criar mais linhas de acordo com a quantidade de linhas coladas
+
+                if (linhaDestino >= dataGridEspeciais.Rows.Count)
+                    break;
+
+                for (int j = 0; j < colunas.Length; j++)
+                {
+                    int colunaDestino = colunaInicial + j;
+
+                    if (colunaDestino >= dataGridEspeciais.Columns.Count)
+                        continue;
+
+                    string nomeColuna =
+                        dataGridEspeciais.Columns[colunaDestino].Name;
+
+                    // Impede a colagem somente na coluna do botão de exclusão.
+                    if (nomeColuna == "Excluir")
+                        continue;
+
+                    dataGridEspeciais.Rows[linhaDestino]
+                        .Cells[colunaDestino]
+                        .Value = colunas[j].Trim();
+                }
+            }
+
+            // Atualiza o indicador “pizza” da coluna NomeEspecial.
+            dataGridEspeciais.InvalidateColumn(
+                dataGridEspeciais.Columns["NomeEspecial"].Index);
+        }
+
+        private int ObterCaracteresRestantes(DataGridViewRow row)//NOVO
+        {
+            string evento = row.Cells["Evento"].Value?.ToString() ?? "";
+            string nomeEspecial = row.Cells["NomeEspecial"].Value?.ToString() ?? "";
+
+            // Durante a digitação, usa o texto atual do campo de edição.
+            if (dataGridEspeciais.IsCurrentCellInEditMode &&
+                dataGridEspeciais.CurrentCell != null &&
+                dataGridEspeciais.CurrentCell.RowIndex == row.Index &&
+                dataGridEspeciais.CurrentCell.OwningColumn.Name == "NomeEspecial" &&
+                dataGridEspeciais.EditingControl != null)
+            {
+                nomeEspecial = dataGridEspeciais.EditingControl.Text;
+            }
+
+            string nomeCompleto = $"{evento.Replace(" x ", " vs ")} - {nomeEspecial}";
+
+            return 100 - nomeCompleto.Length;
+        }
+
+        private void dataGridEspeciais_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
+        {
+            if (e.RowIndex < 0 ||
+            e.ColumnIndex < 0 ||
+            dataGridEspeciais.Columns[e.ColumnIndex].Name != "NomeEspecial")
+            {
+                return;
+            }
+            if (dataGridEspeciais.IsCurrentCellInEditMode &&
+                dataGridEspeciais.CurrentCell != null &&
+                dataGridEspeciais.CurrentCell.RowIndex == e.RowIndex &&
+                dataGridEspeciais.CurrentCell.ColumnIndex == e.ColumnIndex)
+            {
+                e.PaintBackground(e.CellBounds, true);
+                e.Paint(e.CellBounds, DataGridViewPaintParts.Border);
+
+                DesenharContadorCircular(
+                    e.Graphics,
+                    e.CellBounds,
+                    dataGridEspeciais.Rows[e.RowIndex]);
+
+                e.Handled = true;
+                return;
+            }
+            e.PaintBackground(e.CellBounds, true);
+            e.Paint(e.CellBounds, DataGridViewPaintParts.Border);
+
+            string texto = e.FormattedValue?.ToString() ?? "";
+
+            int espacoDoContador = 44;
+
+            Rectangle areaTexto = new Rectangle(
+                e.CellBounds.Left + 4,
+                e.CellBounds.Top,
+                e.CellBounds.Width - espacoDoContador,
+                e.CellBounds.Height);
+
+            TextRenderer.DrawText(
+                e.Graphics,
+                texto,
+                e.CellStyle.Font,
+                areaTexto,
+                e.CellStyle.ForeColor,
+                TextFormatFlags.Left |
+                TextFormatFlags.VerticalCenter |
+                TextFormatFlags.EndEllipsis);
+
+            DesenharContadorCircular(
+                e.Graphics,
+                e.CellBounds,
+                dataGridEspeciais.Rows[e.RowIndex]);
+
+            e.Handled = true;
+        }
+
+        private void comboBoxLigas_TextUpdate(object sender, EventArgs e)// Implementa o filtro de pesquisa para o comboBoxLigas, filtrando a lista original de ligas conforme o usuário digita, e atualizando as opções do comboBox em tempo real
+        {
+            string texto = comboBoxLigas.Text;
+
+            var filtrados = _ligasOriginais
+                .Where(x => x.Nome.Contains(
+                    texto,
+                    StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            comboBoxLigas.BeginUpdate();
+
+            comboBoxLigas.Items.Clear();
+
+            foreach (var liga in filtrados)
+            {
+                comboBoxLigas.Items.Add(liga);
+            }
+
+            comboBoxLigas.EndUpdate();
+
+            comboBoxLigas.Text = texto;
+
+            comboBoxLigas.SelectionStart = comboBoxLigas.Text.Length;
+
+            comboBoxLigas.SelectionLength = 0;
+
+            Cursor.Current = Cursors.Default;
+            comboBoxLigas.DroppedDown = true;
+
+            if (filtrados.Count > 0)
+            {
+                comboBoxLigas.DroppedDown = true;
+            }
+        }
+
+        private void comboBoxEsportes_TextUpdate(object sender, EventArgs e)// Implementa o filtro de pesquisa para o comboBoxEsportes, filtrando a lista original de esportes conforme o usuário digita, e atualizando as opções do comboBox em tempo real
+        {
+            string texto = comboBoxEsportes.Text;
+
+            var filtrados = _esportesOriginais
+                .Where(x => x.Nome.Contains(
+                    texto,
+                    StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            comboBoxEsportes.BeginUpdate();
+
+            comboBoxEsportes.Items.Clear();
+
+            foreach (var esporte in filtrados)
+            {
+                comboBoxEsportes.Items.Add(esporte);
+            }
+
+            comboBoxEsportes.EndUpdate();
+
+            comboBoxEsportes.Text = texto;
+
+            comboBoxEsportes.SelectionStart = comboBoxEsportes.Text.Length;
+
+            comboBoxEsportes.SelectionLength = 0;
+
+            Cursor.Current = Cursors.Default;
+            comboBoxEsportes.DroppedDown = true;
+
+            if (filtrados.Count > 0)
+            {
+                comboBoxEsportes.DroppedDown = true;
+            }
+        }
+
+        private void comboBoxEventos_TextUpdate(object sender, EventArgs e)// Implementa o filtro de pesquisa para o comboBoxEventos, filtrando a lista original de eventos conforme o usuário digita, e atualizando as opções do comboBox em tempo real
+        {
+            string texto = comboBoxEventos.Text;
+
+            var filtrados = _eventosOriginais
+                .Where(x => x.Nome.Contains(
+                    texto,
+                    StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            comboBoxEventos.BeginUpdate();
+
+            comboBoxEventos.Items.Clear();
+
+            foreach (var evento in filtrados)
+            {
+                comboBoxEventos.Items.Add(evento);
+            }
+
+            comboBoxEventos.EndUpdate();
+
+            comboBoxEventos.Text = texto;
+
+            comboBoxEventos.SelectionStart = comboBoxEventos.Text.Length;
+
+            comboBoxEventos.SelectionLength = 0;
 
 
+            Cursor.Current = Cursors.Default;
+            comboBoxEventos.DroppedDown = true;
+
+            if (filtrados.Count > 0)
+            {
+                comboBoxEventos.DroppedDown = true;
+            }
+        }
 
         private async Task CarregarEsportesAsync()
         {
@@ -385,11 +880,13 @@ namespace ProjetoEspeciais.UI
                 comboBoxEsportes.SelectedIndexChanged -= comboBoxEsportes_SelectedIndexChanged;
                 comboBoxEsportes.Enabled = false;
                 comboBoxEsportes.Items.Clear();
-                comboBoxEsportes.Items.Add("Escolha o Esporte");
+                comboBoxEsportes.Items.Add("");
                 comboBoxEsportes.SelectedIndex = 0;
 
                 var esporteService = new AtenaEsporteService(_authService);
                 var esportes = await esporteService.BuscarEsportesAsync();
+
+                _esportesOriginais = esportes;// Guarda a lista original para o filtro de pesquisa no comboBoxEsportes
 
                 comboBoxEsportes.Items.Clear();
                 foreach (var esporte in esportes)
@@ -417,7 +914,6 @@ namespace ProjetoEspeciais.UI
             }
         }
 
-
         private async Task CarregarLigasAsync(int idEsporte)
         {
             try
@@ -432,6 +928,7 @@ namespace ProjetoEspeciais.UI
 
                 var service = new AtenaEventoService(_authService);
                 var ligas = await service.BuscarLigasAsync(idEsporte);
+                _ligasOriginais = ligas;// Guarda a lista original para o filtro de pesquisa no comboBoxLigas
 
                 foreach (var liga in ligas)
                     comboBoxLigas.Items.Add(liga);
@@ -468,6 +965,8 @@ namespace ProjetoEspeciais.UI
 
                 var service = new AtenaEventoService(_authService);
                 var eventos = await service.BuscarEventosAsync(idLiga);
+
+                _eventosOriginais = eventos;// Guarda a lista original para o filtro de pesquisa no comboBoxEventos
 
                 foreach (var evento in eventos)
                     comboBoxEventos.Items.Add(evento);
@@ -536,11 +1035,11 @@ namespace ProjetoEspeciais.UI
 
 
             row.Cells["Evento"].Value = evento.Nome;
+
             row.Cells["Odd"].Value = 0.00m;
             row.Cells["ValorAumento"].Value = 0;
             row.Cells["OddFinal"].Value = 0.00m;
         }
-
 
         private void dataGridEspeciais_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)// Valida a entrada do usuário para garantir que apenas números sejam digitados nas colunas de Odd, ValorAumento, OddFinal e ValorAposta
         {
@@ -551,6 +1050,12 @@ namespace ProjetoEspeciais.UI
             if (colunas.Contains(nomeColuna))
             {
                 string valor = e.FormattedValue.ToString();
+                if (nomeColuna == "ValorAposta")
+                {
+                    valor = valor
+                        .Replace("R$", "")
+                        .Trim();
+                }
 
                 if (!string.IsNullOrEmpty(valor) && !decimal.TryParse(valor, out _))
                 {
@@ -580,21 +1085,145 @@ namespace ProjetoEspeciais.UI
             }
         }
 
+        private void DesenharContadorCircular(
+    Graphics graphics,
+    Rectangle areaCelula,
+    DataGridViewRow row)
+        {
+            int restantes = ObterCaracteresRestantes(row);
+
+            int usados = Math.Max(0, Math.Min(100, 100 - restantes));
+            float anguloUsado = usados * 3.6f;
+
+            int tamanho = 29; // diminui ou aumenta o círculo aqui
+            int margemDireita = 6;
+
+            int x = areaCelula.Right - tamanho - margemDireita;
+            int y = areaCelula.Top + (areaCelula.Height - tamanho) / 2;
+
+            Rectangle circulo = new Rectangle(x, y, tamanho, tamanho);
+
+            graphics.SmoothingMode =
+                System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+
+            using (Brush fundo = new SolidBrush(Color.LightGray))
+            {
+                graphics.FillEllipse(fundo, circulo);
+            }
+
+            Color cor = restantes >= 0
+                ? Color.Gold
+                : Color.IndianRed;
+
+            using (Brush preenchimento = new SolidBrush(cor))
+            {
+                graphics.FillPie(
+                    preenchimento,
+                    circulo,
+                    -90,
+                    anguloUsado);
+            }
+
+            int espessuraAnel = 6;
+
+            Rectangle centro = new Rectangle(
+                circulo.X + espessuraAnel,
+                circulo.Y + espessuraAnel,
+                circulo.Width - espessuraAnel * 2,
+                circulo.Height - espessuraAnel * 2);
+
+            using (Brush fundoCentro = new SolidBrush(Color.DimGray))
+            {
+                graphics.FillEllipse(fundoCentro, centro);
+            }
+
+            using (Pen borda = new Pen(Color.White, 1))
+            {
+                graphics.DrawEllipse(borda, centro);
+            }
+
+            string numero = restantes >= 0 ? restantes.ToString() : "0";
+
+            using (Font fonte = new Font(
+                dataGridEspeciais.Font.FontFamily,
+                6,
+                FontStyle.Bold))
+            {
+                TextRenderer.DrawText(
+                    graphics,
+                    numero,
+                    fonte,
+                    centro,
+                    Color.White,
+                    TextFormatFlags.HorizontalCenter |
+                    TextFormatFlags.VerticalCenter);
+            }
+        }
 
         private void dataGridEspeciais_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            var colunas = new List<string> { "Odd", "ValorAumento", "OddFinal", "ValorAposta" };
-            string nomeColuna = dataGridEspeciais.Columns[dataGridEspeciais.CurrentCell.ColumnIndex].Name;
+            string nomeColuna =
+                dataGridEspeciais.Columns[
+                    dataGridEspeciais.CurrentCell.ColumnIndex
+                ].Name;
 
-            if (colunas.Contains(nomeColuna))
+            e.Control.KeyPress -= ApenasNumeros;
+            e.Control.TextChanged -= NomeEspecial_TextChanged;
+
+            var colunasNumericas = new List<string>
+    {
+        "Odd",
+        "ValorAumento",
+        "OddFinal",
+        "ValorAposta"
+    };
+
+            if (colunasNumericas.Contains(nomeColuna))
             {
-                e.Control.KeyPress -= ApenasNumeros; // evita registrar o evento duas vezes
                 e.Control.KeyPress += ApenasNumeros;
             }
-            else
+
+            if (nomeColuna == "NomeEspecial")
             {
-                e.Control.KeyPress -= ApenasNumeros; // remove se trocar de coluna
+                e.Control.TextChanged += NomeEspecial_TextChanged;
+
+                BeginInvoke(new MethodInvoker(() =>
+                {
+                    if (dataGridEspeciais.CurrentCell == null ||
+                        dataGridEspeciais.CurrentCell.OwningColumn.Name != "NomeEspecial" ||
+                        dataGridEspeciais.EditingControl == null)
+                    {
+                        return;
+                    }
+
+                    const int espacoDoContador = 42;
+
+                    Rectangle r = dataGridEspeciais.GetCellDisplayRectangle(
+                        dataGridEspeciais.CurrentCell.ColumnIndex,
+                        dataGridEspeciais.CurrentCell.RowIndex,
+                        true);
+
+                    dataGridEspeciais.EditingControl.Bounds = new Rectangle(
+                        r.X + 2,
+                        r.Y + 2,
+                        r.Width - espacoDoContador,
+                        r.Height - 4);
+
+                    dataGridEspeciais.EditingControl.BackColor = Color.White;
+                    dataGridEspeciais.EditingControl.ForeColor = Color.Black;
+
+                    dataGridEspeciais.InvalidateCell(dataGridEspeciais.CurrentCell);
+                }));
             }
+        }
+
+        private void NomeEspecial_TextChanged(object sender, EventArgs e)
+        {
+
+            if (dataGridEspeciais.CurrentCell == null)
+                return;
+
+            dataGridEspeciais.InvalidateCell(dataGridEspeciais.CurrentCell);
         }
 
         private void ApenasNumeros(object sender, KeyPressEventArgs e)
@@ -650,8 +1279,6 @@ namespace ProjetoEspeciais.UI
             }
         }
 
-
-
         private void dataGridEspeciais_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
         {
         }
@@ -697,8 +1324,6 @@ namespace ProjetoEspeciais.UI
             }
         }
 
-
-
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
 
@@ -737,6 +1362,39 @@ namespace ProjetoEspeciais.UI
         private void label4_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnLimparLista_Click(object sender, EventArgs e)
+        {
+            textboxLinkEspecial.Clear();
+            textboxLinkEspecial.Visible = false;
+            label4.Visible = false;
+            btnLimparLista.Visible = false;
+        }
+
+        private void btnLimparGrid_Click(object sender, EventArgs e)
+        {
+            if (dataGridEspeciais.Rows.Count == 0)
+            {
+                MessageBox.Show(
+                    "Não há Especiais para serem apagadas.",
+                    "Informação",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                return;
+            }
+
+            DialogResult resultado = MessageBox.Show(
+                "Deseja realmente apagar todas as Especiais?",
+                "Confirmar limpeza",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (resultado == DialogResult.Yes)
+            {
+                dataGridEspeciais.Rows.Clear();
+            }
         }
     }
 }

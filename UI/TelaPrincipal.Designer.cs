@@ -65,6 +65,8 @@
             btnCadastrarSuperOdds = new Button();
             textboxLinkEspecial = new TextBox();
             label4 = new Label();
+            btnLimparLista = new Button();
+            btnLimparGrid = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridEspeciais).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             SuspendLayout();
@@ -90,7 +92,7 @@
             dataGridEspeciais.Location = new Point(12, 169);
             dataGridEspeciais.Name = "dataGridEspeciais";
             dataGridEspeciais.ReadOnly = true;
-            dataGridEspeciais.Size = new Size(1851, 418);
+            dataGridEspeciais.Size = new Size(1851, 497);
             dataGridEspeciais.TabIndex = 2;
             dataGridEspeciais.CellContentClick += dataGridEspeciais_CellContentClick;
             dataGridEspeciais.CellEndEdit += dataGridEspeciais_CellEndEdit;
@@ -349,7 +351,7 @@
             // btnCadastrarSuperOdds
             // 
             btnCadastrarSuperOdds.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnCadastrarSuperOdds.Location = new Point(1752, 735);
+            btnCadastrarSuperOdds.Location = new Point(1752, 795);
             btnCadastrarSuperOdds.Name = "btnCadastrarSuperOdds";
             btnCadastrarSuperOdds.Size = new Size(111, 29);
             btnCadastrarSuperOdds.TabIndex = 23;
@@ -360,10 +362,12 @@
             // textboxLinkEspecial
             // 
             textboxLinkEspecial.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            textboxLinkEspecial.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
             textboxLinkEspecial.Location = new Point(303, 754);
             textboxLinkEspecial.Multiline = true;
             textboxLinkEspecial.Name = "textboxLinkEspecial";
-            textboxLinkEspecial.Size = new Size(1138, 134);
+            textboxLinkEspecial.ScrollBars = ScrollBars.Horizontal;
+            textboxLinkEspecial.Size = new Size(1216, 154);
             textboxLinkEspecial.TabIndex = 24;
             textboxLinkEspecial.TextAlign = HorizontalAlignment.Center;
             textboxLinkEspecial.TextChanged += textboxLinkEspecial_TextChanged;
@@ -380,12 +384,36 @@
             label4.Text = "Links especiais ";
             label4.Click += label4_Click;
             // 
+            // btnLimparLista
+            // 
+            btnLimparLista.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLimparLista.Location = new Point(1408, 914);
+            btnLimparLista.Name = "btnLimparLista";
+            btnLimparLista.Size = new Size(111, 29);
+            btnLimparLista.TabIndex = 26;
+            btnLimparLista.Text = "Limpar";
+            btnLimparLista.UseVisualStyleBackColor = true;
+            btnLimparLista.Click += btnLimparLista_Click;
+            // 
+            // btnLimparGrid
+            // 
+            btnLimparGrid.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnLimparGrid.Location = new Point(1752, 740);
+            btnLimparGrid.Name = "btnLimparGrid";
+            btnLimparGrid.Size = new Size(111, 30);
+            btnLimparGrid.TabIndex = 27;
+            btnLimparGrid.Text = "Limpar lista";
+            btnLimparGrid.UseVisualStyleBackColor = true;
+            btnLimparGrid.Click += btnLimparGrid_Click;
+            // 
             // TelaPrincipal
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(30, 30, 47);
-            ClientSize = new Size(1875, 890);
+            ClientSize = new Size(1875, 969);
+            Controls.Add(btnLimparGrid);
+            Controls.Add(btnLimparLista);
             Controls.Add(label4);
             Controls.Add(textboxLinkEspecial);
             Controls.Add(btnCadastrarSuperOdds);
@@ -451,5 +479,7 @@
         private Button btnCadastrarSuperOdds;
         private TextBox textboxLinkEspecial;
         private Label label4;
+        private Button btnLimparLista;
+        private Button btnLimparGrid;
     }
 }
