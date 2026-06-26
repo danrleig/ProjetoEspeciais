@@ -364,6 +364,7 @@
             textboxLinkEspecial.Location = new Point(303, 754);
             textboxLinkEspecial.Multiline = true;
             textboxLinkEspecial.Name = "textboxLinkEspecial";
+            textboxLinkEspecial.ScrollBars = ScrollBars.Horizontal;
             textboxLinkEspecial.Size = new Size(1216, 134);
             textboxLinkEspecial.TabIndex = 24;
             textboxLinkEspecial.TextAlign = HorizontalAlignment.Center;

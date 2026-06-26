@@ -1,17 +1,18 @@
-﻿using System;
+﻿using ProjetoEspeciais.Data;
+using ProjetoEspeciais.Service;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
-using System.Windows.Forms;
-using ProjetoEspeciais.Service;
-using ProjetoEspeciais.Data;
 using System.Web;
+using System.Windows.Forms;
 
 namespace ProjetoEspeciais.UI
 {
     using System.Linq;
+    using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
     public partial class TelaPrincipal : Form
     {
@@ -33,7 +34,7 @@ namespace ProjetoEspeciais.UI
         private async void TelaPrincipal_Load(object sender, EventArgs e)
         {
             FormatarGrid();
-
+            this.AutoScaleMode = AutoScaleMode.Dpi;
 
         }
 
@@ -148,6 +149,7 @@ namespace ProjetoEspeciais.UI
             int sucesso = 0;
             int falha = 0;
             var links = new System.Text.StringBuilder();
+            int contador = 1; 
             // Percorre cada linha do grid
             foreach (DataGridViewRow row in dataGridEspeciais.Rows)
             {
@@ -231,7 +233,18 @@ namespace ProjetoEspeciais.UI
                     if (!string.IsNullOrEmpty(link))
                     {
                         string dataHora = momentoRealizacao.ToString("dd/MM/yyyy HH:mm");
-                        links.AppendLine($"{nomeEvento} | {dataHora} | {nomeCasa} |{link}");
+                        string risco = row.Cells["RiscoEspecial"].Value?.ToString();
+                        links.AppendLine
+                            
+                            ($@"{contador} - Evento: {nomeEvento} - Data e Hora: {momentoRealizacao} 
+                            Nome Especial: {nomeEspecial} 
+                            📈Odd: {oddOriginal}
+                            🚀Super odds: {oddFinal}
+                            💰Valor de aposta: {valorAposta:C}
+                            Risco: {risco}
+                            🔗Link: {link}
+                            ----------------------------------------");
+                            contador++;
                     }
 
                     sucesso++;
@@ -283,11 +296,18 @@ namespace ProjetoEspeciais.UI
 
             this.WindowState = FormWindowState.Maximized;
 
-            textboxLinkEspecial.Visible = false;
+            textboxLinkEspecial.Visible = true;      
+            textboxLinkEspecial.Multiline = true;
+            textboxLinkEspecial.ScrollBars = ScrollBars.Vertical;
+            textboxLinkEspecial.WordWrap = false;
             textboxLinkEspecial.TextAlign = HorizontalAlignment.Left;
             textboxLinkEspecial.ReadOnly = true;
+
+
             label4.Visible = false;
             btnLimparLista.Visible = false;
+
+            dataGridEspeciais.RowHeadersVisible = false;
             dataGridEspeciais.AllowUserToAddRows = false;
             dataGridEspeciais.KeyDown += dataGridEspeciais_KeyDown;
             dataGridEspeciais.ReadOnly = false;// Permite edição, mas vamos controlar quais colunas são editáveis
