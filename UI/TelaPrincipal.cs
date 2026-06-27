@@ -36,8 +36,7 @@ namespace ProjetoEspeciais.UI
         private async void TelaPrincipal_Load(object sender, EventArgs e)
         {
             FormatarGrid();
-            this.AutoScaleMode = AutoScaleMode.Dpi;
-
+            this.AutoScaleMode = AutoScaleMode.Dpi;                 
         }
 
         // Chamado sempre que receber erro 401 (token expirado ou sessão inválida)
@@ -125,6 +124,21 @@ namespace ProjetoEspeciais.UI
 
             if (!ValidarGridAntesCadastro())
                 return;
+
+                int quantidade = dataGridEspeciais.Rows
+                .Cast<DataGridViewRow>()
+                .Count(r => !r.IsNewRow &&
+                !string.IsNullOrWhiteSpace(r.Cells["Evento"].Value?.ToString()));
+
+                DialogResult resultado = MessageBox.Show(
+                $"Serão cadastradas {quantidade} Super Odds.\n\nDeseja continuar?",
+                "Confirmar cadastro",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+                if (resultado != DialogResult.Yes)
+                    return;
+
 
             // Converte o tipo selecionado para o id do grupo evento
             int idGrupoEvento = comboBoxTipoSuperOdds.SelectedItem.ToString().Contains("Múltiplas Escolhas")
@@ -281,7 +295,7 @@ namespace ProjetoEspeciais.UI
 
             // Reabilita o botão
             btnCadastrarSuperOdds.Enabled = true;
-            btnCadastrarSuperOdds.Text = "Cadastrar Super Odds";
+            btnCadastrarSuperOdds.Text = "Cadastrar";
 
             MessageBox.Show($"Cadastro concluído!\n✅ Sucesso: {sucesso}\n❌ Falha: {falha}",
                 "Resultado", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1086,9 +1100,9 @@ namespace ProjetoEspeciais.UI
         }
 
         private void DesenharContadorCircular(
-    Graphics graphics,
-    Rectangle areaCelula,
-    DataGridViewRow row)
+                    Graphics graphics,
+                    Rectangle areaCelula,
+                    DataGridViewRow row)
         {
             int restantes = ObterCaracteresRestantes(row);
 
